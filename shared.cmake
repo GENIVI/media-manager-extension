@@ -39,6 +39,7 @@ SET(CMAKE_CXX_FLAGS "-std=c++0x")
 # Generate C headers containing JavaScript sources.
 # These go in to generated/ in the build directory
 ADD_CUSTOM_COMMAND (OUTPUT ${MEDIAMANAGER_BINARY_DIR}/generated/mediamanager-extension.h
+                    DEPENDS ${MEDIAMANAGER_SOURCE_DIR}/extension/api.js
                     COMMAND tools/js2c.sh    #Generator script
                             extension/api.js # Source
                             ${MEDIAMANAGER_BINARY_DIR}/generated/mediamanager-extension.h # Dest

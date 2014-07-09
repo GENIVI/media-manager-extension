@@ -46,6 +46,30 @@ bool CAPIClientBrowser::initialize () {
 }
 
 int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, void *data) {
+    std::vector<std::string> filter;
+    CommonAPI::CallStatus status;
+    std::string json;
+    org::genivi::MediaManager::Browser::BrowserError error;
+    int offset, count;
+    const char *path;
+
+    json_t *p0 = json_array_get(json_params, 0);
+    json_t *p1 = json_array_get(json_params, 1);
+    json_t *p2 = json_array_get(json_params, 2);
+    json_t *p3 = json_array_get(json_params, 3);
+    {
+        size_t index;
+        json_t *value;
+
+        json_array_foreach(p3, index, value) {
+            filter.push_back(json_string_value (value));
+        }
+    }
+
+    path   = json_string_value (p0);
+    offset = json_integer_value (p1);
+    count  = json_integer_value (p2);
+
     if (!m_browserProxy) {
         if (!initialize()) {
             std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
@@ -53,7 +77,14 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
         }
     }
 
-    *result = json_string("Not implemented");
+    m_browserProxy->listContainers (path,
+                                    offset,
+                                    count,
+                                    filter,
+                                    status,
+                                    json,
+                                    error);
+    *result = json_string(json.c_str());
     return 0;
 }
 
