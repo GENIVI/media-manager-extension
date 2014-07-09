@@ -64,7 +64,7 @@ function Browser () {
 
 Browser.prototype.RootObject = {
     'DisplayName': 'Root',
-    'Path': '/com/intel/dLeynaServer/server/1'
+    'Path': '/com/intel/dLeynaServer/server/23'
 };
 
 Browser.prototype.listContainers = function (container, offset, count, filter, cb) {
@@ -76,6 +76,19 @@ Browser.prototype.listContainers = function (container, offset, count, filter, c
 
     return this.jsonRPC.request('listContainers',
                                 [path, offset, count, filter],
+                                function (msg, error) {
+                                    cb (JSON.parse(msg), error);
+                                });
+};
+
+Browser.prototype.listItems = function (container, offset, count, filter, cb) {
+    if (!('Path' in container)) {
+        return -1;
+    }
+
+    var path = container['Path'];
+
+    return this.jsonRPC.request('listItems', [path, offset, count, filter],
                                 function (msg, error) {
                                     cb (JSON.parse(msg), error);
                                 });

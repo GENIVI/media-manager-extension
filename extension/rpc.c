@@ -29,6 +29,7 @@ static struct jsonrpc_method_entry_t method_table[] = {
 
     /* Browser API */
     { "listContainers", capi_client_browser_listContainers, "o"},
+    { "listItems", capi_client_browser_listItems, "o"},
     /* Player API */
     { NULL },
 };

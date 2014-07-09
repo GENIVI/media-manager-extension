@@ -21,6 +21,7 @@
 class CAPIClientBrowser {
 public:
 int listContainers(json_t *json_params, json_t **result, void *data);
+int listItems(json_t *json_params, json_t **result, void *data);
 
 private:
 bool initialize();
@@ -30,6 +31,7 @@ std::shared_ptr<org::genivi::MediaManager::BrowserProxy<> > m_browserProxy;
 extern "C" {
 #endif
     int capi_client_browser_listContainers (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_listItems (json_t *json_params, json_t **result, void *data);
 #ifdef __cplusplus
 }
 #endif
