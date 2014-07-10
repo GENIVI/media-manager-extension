@@ -18,6 +18,7 @@
 #include "rpc.h"
 #include "capi-client-indexer.h"
 #include "capi-client-browser.h"
+#include "capi-client-player.h"
 
 
 static struct jsonrpc_method_entry_t method_table[] = {
@@ -31,6 +32,7 @@ static struct jsonrpc_method_entry_t method_table[] = {
     { "listContainers", capi_client_browser_listContainers, "o"},
     { "listItems", capi_client_browser_listItems, "o"},
     /* Player API */
+    { "openUri", capi_client_player_openUri, "o"},
     { NULL },
 };
 

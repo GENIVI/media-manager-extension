@@ -16,14 +16,16 @@ SET (SOURCES
     ${JSONRPC_DIR}/jsonrpc.c
     rpc.c
     capi-client-indexer.cpp
-    capi-client-browser.cpp)
+    capi-client-browser.cpp
+    capi-client-player.cpp)
 
 SET (HEADERS
    ${MEDIAMANAGER_BINARY_DIR}/generated/mediamanager-extension.h
    ${JSONRPC_DIR}/jsonrpc.h
    rpc.h
    capi-client-indexer.h
-   capi-client-browser.h)
+   capi-client-browser.h
+   capi-client-player.h)
 
 MESSAGE(FATAL ${SOURCES})
 

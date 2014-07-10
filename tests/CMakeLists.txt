@@ -16,6 +16,7 @@ SET (SOURCES
      ${MEDIAMANAGER_SOURCE_DIR}/extension/rpc.c
      ${MEDIAMANAGER_SOURCE_DIR}/extension/capi-client-indexer.cpp
      ${MEDIAMANAGER_SOURCE_DIR}/extension/capi-client-browser.cpp
+     ${MEDIAMANAGER_SOURCE_DIR}/extension/capi-client-player.cpp
      ${MEDIAMANAGER_SOURCE_DIR}/extension/mediamanager-extension.c
      extension_test.c
      )
@@ -25,6 +26,7 @@ SET (HEADERS
      ${MEDIAMANAGER_SOURCE_DIR}/extension/rpc.h
      ${MEDIAMANAGER_SOURCE_DIR}/extension/capi-client-indexer.h
      ${MEDIAMANAGER_SOURCE_DIR}/extension/capi-client-browser.h
+     ${MEDIAMANAGER_SOURCE_DIR}/extension/capi-client-player.h
      ${MEDIAMANAGER_BINARY_DIR}/generated/mediamanager-extension.h
      )
 

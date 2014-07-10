@@ -97,6 +97,14 @@ Browser.prototype.listItems = function (container, offset, count, filter, cb) {
                                 });
 };
 
+/* Player API */
+function Player () {
+    this.jsonRPC = jsonRPCInstance;
+};
+
+Player.prototype.openUri = function (uri, cb) {
+    return this.jsonRPC.request('openUri', [uri], cb);
+};
 
 function jsonRPC () {
     this.idCtr = 1;
@@ -121,3 +129,4 @@ jsonRPC.prototype.request = function(fname, params, cb) {
 
 exports.Indexer = Indexer;
 exports.Browser = Browser;
+exports.Player = Player;
