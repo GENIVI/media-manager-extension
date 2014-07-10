@@ -62,9 +62,12 @@ function Browser () {
     this.jsonRPC = jsonRPCInstance;
 };
 
-Browser.prototype.RootObject = {
-    'DisplayName': 'Root',
-    'Path': '/com/intel/dLeynaServer/server/23'
+Browser.prototype.RootObject = function (id) {
+    id = id || '1';
+    return {
+        'DisplayName': 'Root',
+        'Path': '/com/intel/dLeynaServer/server/' + id
+    };
 };
 
 Browser.prototype.listContainers = function (container, offset, count, filter, cb) {
