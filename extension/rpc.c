@@ -31,8 +31,13 @@ static struct jsonrpc_method_entry_t method_table[] = {
     /* Browser API */
     { "listContainers", capi_client_browser_listContainers, "o"},
     { "listItems", capi_client_browser_listItems, "o"},
+    { "createReference", capi_client_browser_createReference, "o"},
+
     /* Player API */
     { "openUri", capi_client_player_openUri, "o"},
+    { "pause", capi_client_player_pause, "o"},
+    { "play", capi_client_player_play, "o"},
+    { "playPause", capi_client_player_playPause, "o"},
     { NULL },
 };
 

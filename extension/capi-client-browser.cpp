@@ -13,19 +13,19 @@ bool CAPIClientBrowser::initialize () {
     auto runtime = CommonAPI::Runtime::load(loadState);
     if (loadState != CommonAPI::Runtime::LoadState::SUCCESS) {
         std::cerr << "Error: Unable to load runtime!\n";
-        return -1;
+        return false;
     }
 
     auto factory = runtime->createFactory();
     if (!factory) {
         std::cerr << "Error: Unable to create factory!\n";
-        return -1;
+        return false;
     }
     const std::string commonApiAddress = "local:org.genivi.MediaManager.Browser:org.genivi.MediaManager.Browser";
     m_browserProxy = factory->buildProxy<org::genivi::MediaManager::BrowserProxy>(commonApiAddress);
     if (!m_browserProxy) {
         std::cerr << "Error: Unable to build browser proxy!\n";
-        return -1;
+        return false;
     }
 
     std::promise<CommonAPI::AvailabilityStatus> availabilityStatusPromise;
@@ -39,7 +39,7 @@ bool CAPIClientBrowser::initialize () {
 
     if (availabilityStatusFuture.get() != CommonAPI::AvailabilityStatus::AVAILABLE) {
         std::cerr << "Proxy not available!\n";
-        return -1;
+        return false;
     }
 
     return true;
@@ -72,7 +72,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
 
     if (!m_browserProxy) {
         if (!initialize()) {
-            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
             return -1;
         }
     }
@@ -120,7 +120,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
 
     if (!m_browserProxy) {
         if (!initialize()) {
-            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
             return -1;
         }
     }
@@ -141,8 +141,45 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
     *result = json_string(json.c_str());
     return 0;
 }
+int CAPIClientBrowser::createReference (json_t *json_params, json_t **result, void *data) {
+    CommonAPI::CallStatus callStatus;
+    org::genivi::MediaManager::Browser::BrowserError error;
+    const char *path, *object;
+    std::string newPath;
+
+    json_t *p0 = json_array_get(json_params, 0);
+    json_t *p1 = json_array_get(json_params, 1);
+    path   = json_string_value (p0);
+    object   = json_string_value (p1);
+
+    if (!m_browserProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
+            return -1;
+        }
+    }
+
+    m_browserProxy->createReference (path,
+                                    object,
+                                    callStatus,
+                                    newPath,
+                                    error);
+
+    if (callStatus != CommonAPI::CallStatus::SUCCESS) {
+        std::cerr << "Remote call failed!\n";
+        return -1;
+    }
+
+    *result = json_string("");
+    return 0;
+}
 
 int capi_client_browser_listItems (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
     return b.listItems(json_params, result, data);
+}
+
+int capi_client_browser_createReference (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.createReference(json_params, result, data);
 }

@@ -31,7 +31,10 @@ extension.setMessageListener(function(msg) {
 
     var echoListener = callbackMap[id];
 
-    echoListener(obj.result, error);
+    if (echoListener != undefined)
+        echoListener(obj.result, error);
+    else
+        console.log ('Warning: No callback set for this call');
 
    delete callbackMap[id];
 });
@@ -97,6 +100,16 @@ Browser.prototype.listItems = function (container, offset, count, filter, cb) {
                                 });
 };
 
+Browser.prototype.createReference = function (container, object, cb) {
+    if (!('Path' in container)) {
+        return -1;
+    }
+
+    var path = container['Path'];
+
+    return this.jsonRPC.request('createReference', [path, object], cb);
+};
+
 /* Player API */
 function Player () {
     this.jsonRPC = jsonRPCInstance;
@@ -104,6 +117,18 @@ function Player () {
 
 Player.prototype.openUri = function (uri, cb) {
     return this.jsonRPC.request('openUri', [uri], cb);
+};
+
+Player.prototype.pause = function (cb) {
+    return this.jsonRPC.request('pause', [], cb);
+};
+
+Player.prototype.play = function (cb) {
+    return this.jsonRPC.request('play', [], cb);
+};
+
+Player.prototype.playPause = function (cb) {
+    return this.jsonRPC.request('playPause', [], cb);
 };
 
 function jsonRPC () {

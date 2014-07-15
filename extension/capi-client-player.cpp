@@ -65,7 +65,70 @@ int CAPIClientPlayer::openUri (json_t *json_params, json_t **result, void *data)
     return 0;
 }
 
+int CAPIClientPlayer::pause (json_t *json_params,  json_t **result, void *data) {
+    org::genivi::MediaManager::Player::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    m_playerProxy->pause (callStatus, error);
+    *result = json_string("");
+    return 0;
+}
+
+int CAPIClientPlayer::play (json_t *json_params,  json_t **result, void *data) {
+    org::genivi::MediaManager::Player::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    m_playerProxy->play (callStatus, error);
+    *result = json_string("");
+    return 0;
+}
+
+int CAPIClientPlayer::playPause (json_t *json_params,  json_t **result, void *data) {
+    org::genivi::MediaManager::Player::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    m_playerProxy->playPause (callStatus, error);
+    *result = json_string("");
+    return 0;
+}
+
 int capi_client_player_openUri (json_t *json_params, json_t **result, void *data) {
     CAPIClientPlayer b;
     return b.openUri(json_params, result, data);
+}
+
+int capi_client_player_pause (json_t *json_params, json_t **result, void *data) {
+    CAPIClientPlayer b;
+    return b.pause(json_params, result, data);
+}
+
+int capi_client_player_play (json_t *json_params, json_t **result, void *data) {
+    CAPIClientPlayer b;
+    return b.play(json_params, result, data);
+}
+
+int capi_client_player_playPause (json_t *json_params, json_t **result, void *data) {
+    CAPIClientPlayer b;
+    return b.playPause(json_params, result, data);
 }
