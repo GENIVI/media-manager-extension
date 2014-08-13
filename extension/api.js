@@ -110,6 +110,16 @@ Browser.prototype.createReference = function (container, object, cb) {
     return this.jsonRPC.request('createReference', [path, object], cb);
 };
 
+Browser.prototype.createContainer = function (container, object, cb) {
+    if (!('Path' in container)) {
+        return -1;
+    }
+
+    var path = container['Path'];
+
+    return this.jsonRPC.request('createContainer', [path, object], cb);
+};
+
 /* Player API */
 function Player () {
     this.jsonRPC = jsonRPCInstance;

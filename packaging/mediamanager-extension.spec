@@ -9,20 +9,29 @@ URL:      http://git.projects.genivi.org/?p=media-manager.git
 Source0:  %{name}-%{version}.tar.gz
 
 Requires: crosswalk jansson
-BuildRequires: cmake git jansson-devel jansson
+BuildRequires: cmake
+BuildRequires: git
+BuildRequires: jansson-devel
+BuildRequires: jansson
+BuildRequires: CommonAPI
+BuildRequires: CommonAPI-DBus
+BuildRequires: pkgconfig(glib-2.0)
+BuildRequires: dbus-genivi
 
 %description
 Media Manager CrossWalk Tizen Extension. Interfaces with GENIVI MediaManager
 
 %prep
 %setup -q
+tar xvfz interfaces.tar.gz
 
 %build
+export PKG_CONFIG_PATH=/opt/genivi/lib/pkgconfig/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} ..
 
-make %{?_smp_mflags}
+make
 
 %install
 cd build

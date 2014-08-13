@@ -23,6 +23,7 @@ public:
 int listContainers(json_t *json_params, json_t **result, void *data);
 int listItems(json_t *json_params, json_t **result, void *data);
 int createReference(json_t *json_params, json_t **result, void *data);
+int createContainer(json_t *json_params, json_t **result, void *data);
 
 private:
 bool initialize();
@@ -34,6 +35,7 @@ extern "C" {
     int capi_client_browser_listContainers (json_t *json_params, json_t **result, void *data);
     int capi_client_browser_listItems (json_t *json_params, json_t **result, void *data);
     int capi_client_browser_createReference (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_createContainer (json_t *json_params, json_t **result, void *data);
 #ifdef __cplusplus
 }
 #endif

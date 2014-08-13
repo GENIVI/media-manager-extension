@@ -11,9 +11,9 @@ if [ ! -d "`dirname $COUT`" ] ; then
     mkdir -p "`dirname $COUT`"
 fi
 
-echo -n "static const char* kSource_echo_api = " > $COUT
+echo -n "static const char* kSource_echo_api = \"" > $COUT
 
-cat $JS | awk -F\n '{print "\"" $_ "\""}' | \
+cat $JS | awk -F\n '{print "" $_ "\\"}' | \
   tr -d $'\r' >> $COUT
 
-echo ";" >> $COUT
+echo "\";" >> $COUT

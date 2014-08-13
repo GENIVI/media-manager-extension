@@ -21,9 +21,9 @@ static void test_can_do_capi_call () {
                                       "  \"method\":  \"GetDatabasePath\","
                                       "  \"id\":      \"1\" }");
     g_print (reply);
-    g_assert_nonnull (reply);
+    g_assert (reply != NULL);
 
-    g_assert_false(g_strrstr(reply, "\"error\""));
+    g_assert(g_strrstr(reply, "\"error\"") == -1);
 }
 
 int main (int argc, char **argv) {

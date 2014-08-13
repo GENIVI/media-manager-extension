@@ -60,8 +60,10 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
     {
         size_t index;
         json_t *value;
+        size_t size = json_array_size(p3);
 
-        json_array_foreach(p3, index, value) {
+        for (int i = 0; i < size; i++) {
+            value = json_array_get (p3, i);
             filter.push_back(json_string_value (value));
         }
     }
@@ -88,11 +90,6 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
     return 0;
 }
 
-int capi_client_browser_listContainers (json_t *json_params, json_t **result, void *data) {
-    CAPIClientBrowser b;
-    return b.listContainers(json_params, result, data);
-}
-
 int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *data) {
     std::vector<std::string> filter;
     CommonAPI::CallStatus callStatus;
@@ -108,8 +105,10 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
     {
         size_t index;
         json_t *value;
+        size_t size = json_array_size(p3);
 
-        json_array_foreach(p3, index, value) {
+        for (int i = 0; i < size; i++) {
+            value = json_array_get (p3, i);
             filter.push_back(json_string_value (value));
         }
     }
@@ -141,6 +140,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
     *result = json_string(json.c_str());
     return 0;
 }
+
 int CAPIClientBrowser::createReference (json_t *json_params, json_t **result, void *data) {
     CommonAPI::CallStatus callStatus;
     org::genivi::MediaManager::Browser::BrowserError error;
@@ -174,6 +174,48 @@ int CAPIClientBrowser::createReference (json_t *json_params, json_t **result, vo
     return 0;
 }
 
+int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, void *data) {
+    CommonAPI::CallStatus callStatus;
+    org::genivi::MediaManager::Browser::BrowserError error;
+    const char *path, *container;
+    std::string newPath;
+    std::vector<std::string> childTypes;
+
+    json_t *p0 = json_array_get(json_params, 0);
+    json_t *p1 = json_array_get(json_params, 1);
+    path      = json_string_value (p0);
+    container = json_string_value (p1);
+
+    childTypes.push_back("container");
+
+    if (!m_browserProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
+            return -1;
+        }
+    }
+
+    m_browserProxy->createContainer (path,
+                                    container,
+                                    childTypes,
+                                    callStatus,
+                                    newPath,
+                                    error);
+
+    if (callStatus != CommonAPI::CallStatus::SUCCESS) {
+        std::cerr << "Remote call failed!\n";
+        return -1;
+    }
+
+    *result = json_string(newPath.c_str());
+    return 0;
+}
+
+int capi_client_browser_listContainers (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.listContainers(json_params, result, data);
+}
+
 int capi_client_browser_listItems (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
     return b.listItems(json_params, result, data);
@@ -182,4 +224,9 @@ int capi_client_browser_listItems (json_t *json_params, json_t **result, void *d
 int capi_client_browser_createReference (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
     return b.createReference(json_params, result, data);
+}
+
+int capi_client_browser_createContainer (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.createContainer(json_params, result, data);
 }
