@@ -20,6 +20,7 @@
 
 class CAPIClientBrowser {
 public:
+int discoverMediaManagers (json_t *json_params, json_t **result, void *data);
 int listContainers(json_t *json_params, json_t **result, void *data);
 int listItems(json_t *json_params, json_t **result, void *data);
 int createReference(json_t *json_params, json_t **result, void *data);
@@ -32,6 +33,7 @@ std::shared_ptr<org::genivi::MediaManager::BrowserProxy<> > m_browserProxy;
 
 extern "C" {
 #endif
+    int capi_client_browser_discoverMediaManagers (json_t *json_params, json_t **result, void *data);
     int capi_client_browser_listContainers (json_t *json_params, json_t **result, void *data);
     int capi_client_browser_listItems (json_t *json_params, json_t **result, void *data);
     int capi_client_browser_createReference (json_t *json_params, json_t **result, void *data);

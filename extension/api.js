@@ -73,6 +73,10 @@ Browser.prototype.RootObject = function (id) {
     };
 };
 
+Browser.prototype.discoverMediaManagers = function (cb) {
+    return this.jsonRPC.request('discoverMediaManagers', [], cb);
+};
+
 Browser.prototype.listContainers = function (container, offset, count, filter, cb) {
     if (!('Path' in container)) {
         return -1;

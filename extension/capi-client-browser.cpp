@@ -45,6 +45,27 @@ bool CAPIClientBrowser::initialize () {
     return true;
 }
 
+int CAPIClientBrowser::discoverMediaManagers (json_t *json_params, json_t **result, void *data) {
+    CommonAPI::CallStatus status;
+    org::genivi::MediaManager::Browser::BrowserError error;
+    *result = json_array();
+    std::vector<std::string> managers;
+
+    if (!m_browserProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
+            return -1;
+        }
+    }
+
+    m_browserProxy->discoverMediaManagers (status,
+                                           managers,
+                                           error);
+    for (int i = 0; i < managers.size(); i++) {
+        json_array_append(*result, json_string(managers[i].c_str()));
+    }
+    return 0;
+}
 int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, void *data) {
     std::vector<std::string> filter;
     CommonAPI::CallStatus status;
@@ -209,6 +230,11 @@ int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, vo
 
     *result = json_string(newPath.c_str());
     return 0;
+}
+
+int capi_client_browser_discoverMediaManagers (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.discoverMediaManagers(json_params, result, data);
 }
 
 int capi_client_browser_listContainers (json_t *json_params, json_t **result, void *data) {
