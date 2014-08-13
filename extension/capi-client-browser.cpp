@@ -232,6 +232,14 @@ int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, vo
     return 0;
 }
 
+int CAPIClientBrowser::listContainersEx(json_t *json_params, json_t **result, void *data){return 0;}
+int CAPIClientBrowser::listItemsEx(json_t *json_params, json_t **result, void *data){return 0;}
+int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void *data){return 0;}
+int CAPIClientBrowser::searchObjectsEx(json_t *json_params, json_t **result, void *data){return 0;}
+int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *data){return 0;}
+int CAPIClientBrowser::listChildrenEx(json_t *json_params, json_t **result, void *data){return 0;}
+int CAPIClientBrowser::listIndexes(json_t *json_params, json_t **result, void *data){return 0;}
+
 int capi_client_browser_discoverMediaManagers (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
     return b.discoverMediaManagers(json_params, result, data);
@@ -255,4 +263,32 @@ int capi_client_browser_createReference (json_t *json_params, json_t **result, v
 int capi_client_browser_createContainer (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
     return b.createContainer(json_params, result, data);
+}
+int capi_client_browser_listContainersEx (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.listContainersEx(json_params, result, data);
+}
+int capi_client_browser_listItemsEx (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.listItemsEx(json_params, result, data);
+}
+int capi_client_browser_searchObjects (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.searchObjects(json_params, result, data);
+}
+int capi_client_browser_searchObjectsEx (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.searchObjectsEx(json_params, result, data);
+}
+int capi_client_browser_listIndexes (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.listIndexes(json_params, result, data);
+}
+int capi_client_browser_listChildren (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.listChildren(json_params, result, data);
+}
+int capi_client_browser_listChildrenEx (json_t *json_params, json_t **result, void *data) {
+    CAPIClientBrowser b;
+    return b.listChildrenEx(json_params, result, data);
 }

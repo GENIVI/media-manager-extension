@@ -25,6 +25,13 @@ int listContainers(json_t *json_params, json_t **result, void *data);
 int listItems(json_t *json_params, json_t **result, void *data);
 int createReference(json_t *json_params, json_t **result, void *data);
 int createContainer(json_t *json_params, json_t **result, void *data);
+int listContainersEx(json_t *json_params, json_t **result, void *data);
+int listItemsEx(json_t *json_params, json_t **result, void *data);
+int searchObjects(json_t *json_params, json_t **result, void *data);
+int searchObjectsEx(json_t *json_params, json_t **result, void *data);
+int listChildren(json_t *json_params, json_t **result, void *data);
+int listChildrenEx(json_t *json_params, json_t **result, void *data);
+int listIndexes(json_t *json_params, json_t **result, void *data);
 
 private:
 bool initialize();
@@ -38,6 +45,13 @@ extern "C" {
     int capi_client_browser_listItems (json_t *json_params, json_t **result, void *data);
     int capi_client_browser_createReference (json_t *json_params, json_t **result, void *data);
     int capi_client_browser_createContainer (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_listContainersEx (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_listItemsEx (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_searchObjects (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_searchObjectsEx (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_listIndexes (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_listChildren (json_t *json_params, json_t **result, void *data);
+    int capi_client_browser_listChildrenEx (json_t *json_params, json_t **result, void *data);
 #ifdef __cplusplus
 }
 #endif
