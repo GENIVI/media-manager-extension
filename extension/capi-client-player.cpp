@@ -61,14 +61,9 @@ bool CAPIClientPlayer::initialize () {
         return -1;
     }
 
-    if (playbackStatus == org::genivi::MediaManager::Player::PlaybackStatus::PLAYING) {
-        std::cout << "Status is: PLAYING" << std::endl;
-    } else {
-        std::cout << "Status is: PAUSED" << std::endl;
-    }
-
-    m_playerProxy->getPlaybackStatusAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::PlaybackStatus&) {
+    m_playerProxy->getPlaybackStatusAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::PlaybackStatus& status) {
         std::cout << "Playback status changed!" << std::endl;
+        rpc_send_notification(xw_instance, "PlaybackStatus", "\"PLAYING\"");
     });
 
     return true;
@@ -648,6 +643,12 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
     m_playerProxy->getPositionAttribute().getValue(callStatus, response);
     *result = json_integer(response);
     return 0;
+}
+
+void capi_client_player_set_xwalk_instance (XW_Instance instance) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    b->xw_instance = instance;
 }
 
 int capi_client_player_openUri (json_t *json_params, json_t **result, void *data) {

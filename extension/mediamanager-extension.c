@@ -20,6 +20,7 @@
 #include "rpc.h"
 
 #include "mediamanager-extension.h"
+#include "raw_message_interface.h"
 
 static XW_Extension g_extension = 0;
 static const XW_CoreInterface* g_core = NULL;
@@ -34,8 +35,8 @@ static void instance_destroyed(XW_Instance instance) {
     printf("Instance %d destroyed!\n", instance);
 }
 
-static char* build_response(const char* message) {
-    char *ret = rpc_handle_message(message);
+static char* build_response(XW_Instance instance, const char* message) {
+    char *ret = rpc_handle_message(instance, message);
     if (!ret)
         return (strdup ("Invalid request!"));
     else
@@ -43,19 +44,23 @@ static char* build_response(const char* message) {
 }
 
 static void handle_message(XW_Instance instance, const char* message) {
-    char* response = build_response(message);
+    char* response = build_response(instance, message);
     g_messaging->PostMessage(instance, response);
     free(response);
 }
 
 static void handle_sync_message(XW_Instance instance, const char* message) {
-    char* response = build_response(message);
+    char* response = build_response(instance, message);
     g_sync_messaging->SetSyncReply(instance, response);
     free(response);
 }
 
 static void shutdown(XW_Extension extension) {
     printf("Shutdown\n");
+}
+
+void sendRawMessage(XW_Instance instance, const char *message) {
+    g_messaging->PostMessage(instance, message);
 }
 
 int32_t XW_Initialize(XW_Extension extension, XW_GetInterface get_interface) {

@@ -14,6 +14,7 @@
 #ifndef CAPI_CLIENT_PLAYER_H
 #define CAPI_CLIENT_PLAYER_H
 #include "jansson.h"
+#include "XW_Extension.h"
 
 #ifdef __cplusplus
 #include <org/genivi/MediaManager/PlayerProxy.h>
@@ -21,6 +22,7 @@
 class CAPIClientPlayer {
 public:
 
+XW_Instance xw_instance;
 static CAPIClientPlayer *instance();
 
 int openUri(json_t *json_params, json_t **result, void *data);
@@ -59,6 +61,8 @@ static CAPIClientPlayer *m_instance;
 
 extern "C" {
 #endif
+    void capi_client_player_set_xwalk_instance(XW_Extension instance);
+
     int capi_client_player_openUri (json_t *json_params, json_t **result, void *data);
     int capi_client_player_pause (json_t *json_params, json_t **result, void *data);
     int capi_client_player_play (json_t *json_params, json_t **result, void *data);

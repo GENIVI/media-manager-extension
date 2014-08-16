@@ -13,9 +13,28 @@
 
 var callbackMap = {};
 var jsonRPCInstance = new jsonRPC();
+var notificationHandler = null;
+
+function handleNotification (obj) {
+    console.log ('Received notification: ' + JSON.stringify(obj));
+    var method = obj['method'];
+    var params = obj['params'];
+
+    if (notificationHandler) {
+        notificationHandler (method, params);
+    } else {
+        console.log ('No notification handler registered!');
+    }
+};
 
 extension.setMessageListener(function(msg) {
     var obj = JSON.parse(msg);
+
+    if (!('id' in obj)) {
+        handleNotification(obj);
+        return;
+    }
+
     var id = obj.id.toString();
     var error = null;
 
@@ -656,3 +675,14 @@ jsonRPC.prototype.request = function(fname, params, cb) {
 exports.Indexer = Indexer;
 exports.Browser = Browser;
 exports.Player = Player;
+
+/* Used to register a notification handler, which will receive events such as
+ * playback status changed, etc.
+    @param cb: function (string method, string parameter)
+        - msg is the property which has changed
+        - parameter is the new value of the property
+*/
+exports.registerNotificationHandler = function (cb) {
+    notificationHandler = cb;
+}
+

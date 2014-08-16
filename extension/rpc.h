@@ -14,6 +14,8 @@
 #define RPC_H
 
 #include "jsonrpc.h"
+#include "XW_Extension.h"
+
 /*! Various error values for RPC commands. These are typically included in
  * JSON-RPC error responses */
 typedef enum {
@@ -35,6 +37,15 @@ typedef enum {
  * \returns: JSON-RPC 2.0 reply if \p message is valid
  * \returns: NULL if \p message is invalid
  */
-char *rpc_handle_message (const char *message);
+char *rpc_handle_message (XW_Instance instance, const char *message);
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif 
+void rpc_send_notification (XW_Instance instance, const char *method, const char *params);
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* RPC_H */

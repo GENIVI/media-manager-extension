@@ -17,7 +17,8 @@
 #include "capi-client-indexer.h"
 
 static void test_can_do_capi_call () {
-    char *reply = rpc_handle_message ("{ \"jsonrpc\": \"2.0\","
+    char *reply = rpc_handle_message (0,
+                                      "{ \"jsonrpc\": \"2.0\","
                                       "  \"method\":  \"GetDatabasePath\","
                                       "  \"id\":      \"1\" }");
     g_print (reply);

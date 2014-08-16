@@ -19,6 +19,8 @@
 #include "capi-client-indexer.h"
 #include "capi-client-browser.h"
 #include "capi-client-player.h"
+#include "raw_message_interface.h"
+#include "glib.h"
 
 
 static struct jsonrpc_method_entry_t method_table[] = {
@@ -73,9 +75,22 @@ static struct jsonrpc_method_entry_t method_table[] = {
     { NULL },
 };
 
-char *rpc_handle_message (const char *message) {
+char *rpc_handle_message (XW_Instance instance, const char *message) {
+    capi_client_player_set_xwalk_instance (instance);
+
     return jsonrpc_handler(message,
                                strlen(message),
                                method_table,
                                NULL);
+}
+
+void rpc_send_notification (XW_Instance instance, const char *method, const char *params) {
+    char *message = g_strdup_printf("{\"jsonrpc\": \"2.0\", \
+                                      \"method\": \"%s\", \
+                                      \"params\": %s}",
+                                      method,
+                                      params);
+    sendRawMessage (instance, message);
+
+    g_free (message);
 }
