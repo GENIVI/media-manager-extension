@@ -8,6 +8,16 @@
 #include "capi-client-player.h"
 #include "rpc.h"
 
+CAPIClientPlayer* CAPIClientPlayer::m_instance = NULL;
+
+CAPIClientPlayer* CAPIClientPlayer::instance() {
+    if (!m_instance) {
+        m_instance = new CAPIClientPlayer();
+    }
+    return m_instance;
+}
+
+
 bool CAPIClientPlayer::initialize () {
     CommonAPI::Runtime::LoadState loadState;
     auto runtime = CommonAPI::Runtime::load(loadState);
@@ -41,6 +51,25 @@ bool CAPIClientPlayer::initialize () {
         std::cerr << "Proxy not available!\n";
         return -1;
     }
+
+    CommonAPI::CallStatus callStatus;
+    org::genivi::MediaManager::Player::PlaybackStatus playbackStatus;
+
+    m_playerProxy->getPlaybackStatusAttribute().getValue(callStatus, playbackStatus);
+    if (callStatus != CommonAPI::CallStatus::SUCCESS) {
+        std::cout << "Failed to get playback status" << std::endl;
+        return -1;
+    }
+
+    if (playbackStatus == org::genivi::MediaManager::Player::PlaybackStatus::PLAYING) {
+        std::cout << "Status is: PLAYING" << std::endl;
+    } else {
+        std::cout << "Status is: PAUSED" << std::endl;
+    }
+
+    m_playerProxy->getPlaybackStatusAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::PlaybackStatus&) {
+        std::cout << "Playback status changed!" << std::endl;
+    });
 
     return true;
 }
@@ -561,11 +590,11 @@ int CAPIClientPlayer::getCurrentTrack (json_t *json_params,  json_t **result, vo
     org::genivi::MediaManager::Player::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
-    #if JSON_INTEGER_IS_LONG_LONG
-    long long unsigned response;
-    #else
+//    #if JSON_INTEGER_IS_LONG_LONG
+//    long long unsigned response;
+//    #else
     long unsigned response;
-    #endif
+//    #endif
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -602,12 +631,12 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
     std::cout << "In method " << __FUNCTION__ << std::endl;
     org::genivi::MediaManager::Player::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    
-    #if JSON_INTEGER_IS_LONG_LONG
-    long long unsigned response;
-    #else
+
+//    #if JSON_INTEGER_IS_LONG_LONG
+//    long long unsigned response;
+//    #else
     long unsigned response;
-    #endif
+//    #endif
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -623,139 +652,139 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
 
 int capi_client_player_openUri (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.openUri(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->openUri(json_params, result, data);
 }
 
 int capi_client_player_pause (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.pause(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->pause(json_params, result, data);
 }
 
 int capi_client_player_play (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.play(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->play(json_params, result, data);
 }
 
 int capi_client_player_playPause (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.playPause(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->playPause(json_params, result, data);
 }
 int capi_client_player_next (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.next(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->next(json_params, result, data);
 }
 int capi_client_player_openPlaylist (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.openPlaylist(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->openPlaylist(json_params, result, data);
 }
 int capi_client_player_previous (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.previous(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->previous(json_params, result, data);
 }
 int capi_client_player_seek (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.seek(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->seek(json_params, result, data);
 }
 int capi_client_player_setPosition (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.setPosition(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->setPosition(json_params, result, data);
 }
 int capi_client_player_setMuted (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.setMuted(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->setMuted(json_params, result, data);
 }
 int capi_client_player_getMuted (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getMuted(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getMuted(json_params, result, data);
 }
 int capi_client_player_setShuffled (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.setShuffled(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->setShuffled(json_params, result, data);
 }
 int capi_client_player_getShuffled (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getShuffled(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getShuffled(json_params, result, data);
 }
 int capi_client_player_setRepeated (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.setRepeated(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->setRepeated(json_params, result, data);
 }
 int capi_client_player_getRepeated (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getRepeated(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getRepeated(json_params, result, data);
 }
 int capi_client_player_setRate (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.setRate(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->setRate(json_params, result, data);
 }
 int capi_client_player_getRate (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getRate(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getRate(json_params, result, data);
 }
 int capi_client_player_getVolume (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getVolume(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getVolume(json_params, result, data);
 }
 int capi_client_player_setVolume (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.setVolume(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->setVolume(json_params, result, data);
 }
 int capi_client_player_getCanGoNext (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getCanGoNext(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getCanGoNext(json_params, result, data);
 }
 int capi_client_player_getCanGoPrevious (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getCanGoPrevious(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getCanGoPrevious(json_params, result, data);
 }
 int capi_client_player_getCanPause (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getCanPause(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getCanPause(json_params, result, data);
 }
 int capi_client_player_getCanPlay (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getCanPlay(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getCanPlay(json_params, result, data);
 }
 int capi_client_player_getCanSeek (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getCanSeek(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getCanSeek(json_params, result, data);
 }
 int capi_client_player_getCurrentTrack (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getCurrentTrack(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getCurrentTrack(json_params, result, data);
 }
 int capi_client_player_getPlaybackStatus (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getPlaybackStatus(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getPlaybackStatus(json_params, result, data);
 }
 int capi_client_player_getPosition (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    CAPIClientPlayer b;
-    return b.getPosition(json_params, result, data);
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getPosition(json_params, result, data);
 }

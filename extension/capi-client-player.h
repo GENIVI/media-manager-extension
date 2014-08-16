@@ -20,6 +20,9 @@
 
 class CAPIClientPlayer {
 public:
+
+static CAPIClientPlayer *instance();
+
 int openUri(json_t *json_params, json_t **result, void *data);
 int pause (json_t *json_params,  json_t **result, void *data);
 int play (json_t *json_params,  json_t **result, void *data);
@@ -51,6 +54,7 @@ int getPosition (json_t *json_params,  json_t **result, void *data);
 private:
 bool initialize();
 std::shared_ptr<org::genivi::MediaManager::PlayerProxy<> > m_playerProxy;
+static CAPIClientPlayer *m_instance;
 };
 
 extern "C" {
