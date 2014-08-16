@@ -55,6 +55,7 @@ int getPosition (json_t *json_params,  json_t **result, void *data);
 
 private:
 bool initialize();
+void registerEvents();
 std::shared_ptr<org::genivi::MediaManager::PlayerProxy<> > m_playerProxy;
 static CAPIClientPlayer *m_instance;
 };

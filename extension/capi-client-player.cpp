@@ -17,6 +17,16 @@ CAPIClientPlayer* CAPIClientPlayer::instance() {
     return m_instance;
 }
 
+void CAPIClientPlayer::registerEvents() {
+    m_playerProxy->getPlaybackStatusAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::PlaybackStatus& status) {
+        std::cout << "Playback status changed!" << std::endl;
+        if (status == org::genivi::MediaManager::Player::PlaybackStatus::PLAYING) {
+            rpc_send_notification(xw_instance, "PlaybackStatus", "\"PLAYING\"");
+        } else {
+            rpc_send_notification(xw_instance, "PlaybackStatus", "\"PAUSED\"");
+        }
+    });
+}
 
 bool CAPIClientPlayer::initialize () {
     CommonAPI::Runtime::LoadState loadState;
@@ -61,11 +71,7 @@ bool CAPIClientPlayer::initialize () {
         return -1;
     }
 
-    m_playerProxy->getPlaybackStatusAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::PlaybackStatus& status) {
-        std::cout << "Playback status changed!" << std::endl;
-        rpc_send_notification(xw_instance, "PlaybackStatus", "\"PLAYING\"");
-    });
-
+    registerEvents();
     return true;
 }
 
