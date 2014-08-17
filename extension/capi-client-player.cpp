@@ -7,6 +7,7 @@
 
 #include "capi-client-player.h"
 #include "rpc.h"
+#include "inttypes.h"
 
 CAPIClientPlayer* CAPIClientPlayer::m_instance = NULL;
 
@@ -26,6 +27,47 @@ void CAPIClientPlayer::registerEvents() {
             rpc_send_notification(xw_instance, "PlaybackStatus", "\"PAUSED\"");
         }
     });
+
+    m_playerProxy->getCurrentTrackAttribute().getChangedEvent().subscribe([&](const uint64_t& trackIdx) {
+        std::cout << "Current track changed: " << trackIdx << std::endl;
+        char trackIdxStr[10];
+        sprintf(trackIdxStr, "%" PRIu64, trackIdx);
+        rpc_send_notification(xw_instance, "CurrentTrack", trackIdxStr);
+    });
+
+    m_playerProxy->getMuteAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::MuteStatus& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getShuffleAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::ShuffleStatus& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getRepeatAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RepeatStatus& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RateStatus& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getVolumeAttribute().getChangedEvent().subscribe([&](const double& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getCanGoNextAttribute().getChangedEvent().subscribe([&](const bool& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getCanGoPreviousAttribute().getChangedEvent().subscribe([&](const bool& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getCanPauseAttribute().getChangedEvent().subscribe([&](const bool& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getCanPlayAttribute().getChangedEvent().subscribe([&](const bool& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+    m_playerProxy->getCanSeekAttribute().getChangedEvent().subscribe([&](const bool& status) {
+        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+    });
+//    m_playerProxy->getPositionAttribute().getChangedEvent().subscribe([&](const uint64_t& status) {
+//        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+//    });
 }
 
 bool CAPIClientPlayer::initialize () {
