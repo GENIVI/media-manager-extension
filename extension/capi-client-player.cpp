@@ -36,46 +36,96 @@ void CAPIClientPlayer::registerEvents() {
     });
 
     m_playerProxy->getMuteAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::MuteStatus& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        if (status == org::genivi::MediaManager::Player::MuteStatus::MUTED)
+            rpc_send_notification(xw_instance, "Mute", "true");
+        else
+            rpc_send_notification(xw_instance, "Mute", "false");
     });
+
     m_playerProxy->getShuffleAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::ShuffleStatus& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        if (status == org::genivi::MediaManager::Player::ShuffleStatus::SHUFFLE)
+            rpc_send_notification(xw_instance, "Shuffle", "true");
+        else
+            rpc_send_notification(xw_instance, "Shuffle", "false");
     });
+
     m_playerProxy->getRepeatAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RepeatStatus& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        if (status == org::genivi::MediaManager::Player::RepeatStatus::REPEAT)
+            rpc_send_notification(xw_instance, "Releat", "true");
+        else
+            rpc_send_notification(xw_instance, "Shuffled", "false");
     });
+
     m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RateStatus& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        int rate = 1;
+        char rateStr[5];
+
+        switch (status) {
+            case org::genivi::MediaManager::Player::RateStatus::RATE_1:
+                rate = 1;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_2:
+                rate = 2;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_4:
+                rate = 4;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_8:
+                rate = 8;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_16:
+                rate = 16;
+                break;
+            default:
+                std::cout << "Unknown rate" << std::endl;
+                return;
+        }
+
+        sprintf(rateStr, "%d", rate);
+
+        rpc_send_notification(xw_instance, "Rate", "rateStr");
     });
+
     m_playerProxy->getVolumeAttribute().getChangedEvent().subscribe([&](const double& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        char volumeStr[10];
+        sprintf(volumeStr, "%f", status);
+        rpc_send_notification(xw_instance, "Volume", volumeStr);
     });
+
     m_playerProxy->getCanGoNextAttribute().getChangedEvent().subscribe([&](const bool& status) {
-        std::cout << "In event listener getCanGoNext" << std::endl;
         if (status)
             rpc_send_notification(xw_instance, "CanGoNext", "true");
         else
             rpc_send_notification(xw_instance, "CanGoNext", "false");
     });
+
     m_playerProxy->getCanGoPreviousAttribute().getChangedEvent().subscribe([&](const bool& status) {
-        std::cout << "In event listener getCanGoPrevious" << std::endl;
         if (status)
             rpc_send_notification(xw_instance, "CanGoPrevious", "true");
         else
             rpc_send_notification(xw_instance, "CanGoPrevious", "false");
     });
+
     m_playerProxy->getCanPauseAttribute().getChangedEvent().subscribe([&](const bool& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        if (status)
+            rpc_send_notification(xw_instance, "CanPause", "true");
+        else
+            rpc_send_notification(xw_instance, "CanPause", "false");
     });
+
     m_playerProxy->getCanPlayAttribute().getChangedEvent().subscribe([&](const bool& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        if (status)
+            rpc_send_notification(xw_instance, "CanPlay", "true");
+        else
+            rpc_send_notification(xw_instance, "CanPlay", "false");
     });
+
     m_playerProxy->getCanSeekAttribute().getChangedEvent().subscribe([&](const bool& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        if (status)
+            rpc_send_notification(xw_instance, "CanSeek", "true");
+        else
+            rpc_send_notification(xw_instance, "CanSeek", "false");
     });
-//    m_playerProxy->getPositionAttribute().getChangedEvent().subscribe([&](const uint64_t& status) {
-//        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
-//    });
 }
 
 bool CAPIClientPlayer::initialize () {
