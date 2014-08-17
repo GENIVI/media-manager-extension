@@ -51,10 +51,18 @@ void CAPIClientPlayer::registerEvents() {
         std::cout << "In event listener: " << __FUNCTION__ << std::endl;
     });
     m_playerProxy->getCanGoNextAttribute().getChangedEvent().subscribe([&](const bool& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        std::cout << "In event listener getCanGoNext" << std::endl;
+        if (status)
+            rpc_send_notification(xw_instance, "CanGoNext", "true");
+        else
+            rpc_send_notification(xw_instance, "CanGoNext", "false");
     });
     m_playerProxy->getCanGoPreviousAttribute().getChangedEvent().subscribe([&](const bool& status) {
-        std::cout << "In event listener: " << __FUNCTION__ << std::endl;
+        std::cout << "In event listener getCanGoPrevious" << std::endl;
+        if (status)
+            rpc_send_notification(xw_instance, "CanGoPrevious", "true");
+        else
+            rpc_send_notification(xw_instance, "CanGoPrevious", "false");
     });
     m_playerProxy->getCanPauseAttribute().getChangedEvent().subscribe([&](const bool& status) {
         std::cout << "In event listener: " << __FUNCTION__ << std::endl;
