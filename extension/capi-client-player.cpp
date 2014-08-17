@@ -51,9 +51,9 @@ void CAPIClientPlayer::registerEvents() {
 
     m_playerProxy->getRepeatAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RepeatStatus& status) {
         if (status == org::genivi::MediaManager::Player::RepeatStatus::REPEAT)
-            rpc_send_notification(xw_instance, "Releat", "true");
+            rpc_send_notification(xw_instance, "Repeat", "true");
         else
-            rpc_send_notification(xw_instance, "Shuffled", "false");
+            rpc_send_notification(xw_instance, "Repeat", "false");
     });
 
     m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RateStatus& status) {
