@@ -48,6 +48,7 @@ static struct jsonrpc_method_entry_t method_table[] = {
     { "openUri", capi_client_player_openUri, "o"},
     { "pause", capi_client_player_pause, "o"},
     { "play", capi_client_player_play, "o"},
+    { "stop", capi_client_player_stop, "o"},
     { "playPause", capi_client_player_playPause, "o"},
     { "next", capi_client_player_next, "o"},
     { "openPlaylist", capi_client_player_openPlaylist, "o"},

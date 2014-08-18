@@ -419,6 +419,15 @@ Player.prototype.play = function (cb) {
     return this.jsonRPC.request('play', [], cb);
 };
 
+/* Stop the currently selected media
+    @param cb: function (string msg, string error)
+        - msg is never set
+        - error is any potential error
+*/
+Player.prototype.stop = function (cb) {
+    return this.jsonRPC.request('stop', [], cb);
+};
+
 
 /* Play or pause the currently selected media
     @param cb: function (string msg, string error)

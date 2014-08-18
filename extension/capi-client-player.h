@@ -28,6 +28,7 @@ static CAPIClientPlayer *instance();
 int openUri(json_t *json_params, json_t **result, void *data);
 int pause (json_t *json_params,  json_t **result, void *data);
 int play (json_t *json_params,  json_t **result, void *data);
+int stop (json_t *json_params,  json_t **result, void *data);
 int playPause (json_t *json_params,  json_t **result, void *data);
 int next (json_t *json_params,  json_t **result, void *data);
 int openPlaylist (json_t *json_params,  json_t **result, void *data);
@@ -67,6 +68,7 @@ extern "C" {
     int capi_client_player_openUri (json_t *json_params, json_t **result, void *data);
     int capi_client_player_pause (json_t *json_params, json_t **result, void *data);
     int capi_client_player_play (json_t *json_params, json_t **result, void *data);
+    int capi_client_player_stop (json_t *json_params, json_t **result, void *data);
     int capi_client_player_playPause (json_t *json_params, json_t **result, void *data);
     int capi_client_player_next (json_t *json_params, json_t **result, void *data);
     int capi_client_player_openPlaylist (json_t *json_params, json_t **result, void *data);
