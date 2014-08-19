@@ -83,7 +83,7 @@ void CAPIClientPlayer::registerEvents() {
 
         sprintf(rateStr, "%d", rate);
 
-        rpc_send_notification(xw_instance, "Rate", "rateStr");
+        rpc_send_notification(xw_instance, "Rate", rateStr);
     });
 
     m_playerProxy->getVolumeAttribute().getChangedEvent().subscribe([&](const double& status) {
@@ -350,7 +350,7 @@ int CAPIClientPlayer::setPosition (json_t *json_params,  json_t **result, void *
         }
     }
 
-    m_playerProxy->seek (pos, callStatus, error);
+    m_playerProxy->setPosition (pos, callStatus, error);
     *result = json_string("");
     return 0;
 }

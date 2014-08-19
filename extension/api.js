@@ -483,7 +483,7 @@ Player.prototype.seek = function (pos, cb) {
         - error is any potential error
 */
 Player.prototype.setPosition = function (pos, cb) {
-    return this.jsonRPC.request('seek', [pos], cb);
+    return this.jsonRPC.request('setPosition', [pos], cb);
 };
 
 /* Set the 'muted' property
