@@ -61,6 +61,21 @@ void CAPIClientPlayer::registerEvents() {
         char rateStr[5];
 
         switch (status) {
+            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_16:
+                rateInt = -16;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_8:
+                rateInt = -8;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_4:
+                rateInt = -4;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_2:
+                rateInt = -2;
+                break;
+            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_1:
+                rateInt = -1;
+                break;
             case org::genivi::MediaManager::Player::RateStatus::RATE_1:
                 rate = 1;
                 break;
