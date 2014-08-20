@@ -53,6 +53,9 @@ int getCanSeek (json_t *json_params,  json_t **result, void *data);
 int getCurrentTrack (json_t *json_params,  json_t **result, void *data);
 int getPlaybackStatus (json_t *json_params,  json_t **result, void *data);
 int getPosition (json_t *json_params,  json_t **result, void *data);
+int getCurrentPlayQueue (json_t *json_params,  json_t **result, void *data);
+int enqueueUri (json_t *json_params,  json_t **result, void *data);
+int dequeueIndex (json_t *json_params,  json_t **result, void *data);
 
 private:
 bool initialize();
@@ -93,6 +96,9 @@ extern "C" {
     int capi_client_player_getCurrentTrack (json_t *json_params, json_t **result, void *data);
     int capi_client_player_getPlaybackStatus (json_t *json_params, json_t **result, void *data);
     int capi_client_player_getPosition (json_t *json_params, json_t **result, void *data);
+    int capi_client_player_getCurrentPlayQueue (json_t *json_params, json_t **result, void *data);
+    int capi_client_player_enqueueUri (json_t *json_params, json_t **result, void *data);
+    int capi_client_player_dequeueIndex (json_t *json_params, json_t **result, void *data);
 #ifdef __cplusplus
 }
 #endif

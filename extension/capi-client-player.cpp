@@ -62,19 +62,19 @@ void CAPIClientPlayer::registerEvents() {
 
         switch (status) {
             case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_16:
-                rateInt = -16;
+                rate = -16;
                 break;
             case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_8:
-                rateInt = -8;
+                rate = -8;
                 break;
             case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_4:
-                rateInt = -4;
+                rate = -4;
                 break;
             case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_2:
-                rateInt = -2;
+                rate = -2;
                 break;
             case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_1:
-                rateInt = -1;
+                rate = -1;
                 break;
             case org::genivi::MediaManager::Player::RateStatus::RATE_1:
                 rate = 1;
@@ -784,6 +784,24 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
     return 0;
 }
 
+int CAPIClientPlayer::getCurrentPlayQueue (json_t *json_params,  json_t **result, void *data) {
+    org::genivi::MediaManager::Player::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    std::string response;
+    m_playerProxy->getCurrentPlayQueue(callStatus, response, error);
+    *result = json_string(response.c_str());
+    return 0;
+}
+int CAPIClientPlayer::enqueueUri (json_t *json_params,  json_t **result, void *data) {}
+int CAPIClientPlayer::dequeueIndex (json_t *json_params,  json_t **result, void *data) {}
 void capi_client_player_set_xwalk_instance (XW_Instance instance) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
     CAPIClientPlayer *b = CAPIClientPlayer::instance();
@@ -933,4 +951,19 @@ int capi_client_player_getPosition (json_t *json_params, json_t **result, void *
     std::cout << "In method " << __FUNCTION__ << std::endl;
     CAPIClientPlayer *b = CAPIClientPlayer::instance();
     return b->getPosition(json_params, result, data);
+}
+int capi_client_player_getCurrentPlayQueue (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getCurrentPlayQueue(json_params, result, data);
+}
+int capi_client_player_enqueueUri (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->enqueueUri(json_params, result, data);
+}
+int capi_client_player_dequeueIndex (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->dequeueIndex(json_params, result, data);
 }

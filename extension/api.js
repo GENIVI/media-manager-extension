@@ -659,6 +659,12 @@ Player.prototype.getPosition = function (cb) {
 };
 
 
+Player.prototype.getCurrentPlayQueue = function (cb) {
+    return this.jsonRPC.request('getCurrentPlayQueue', [],
+                                function (msg, error) {
+                                    cb (JSON.parse(msg), error);
+                                });
+};
 
 function jsonRPC () {
     this.idCtr = 1;
