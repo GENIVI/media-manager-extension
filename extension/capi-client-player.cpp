@@ -838,6 +838,21 @@ int CAPIClientPlayer::dequeueIndex (json_t *json_params,  json_t **result, void 
     m_playerProxy->dequeueIndex(idx, callStatus, error);
     *result = json_string("");
 }
+int CAPIClientPlayer::dequeueAll (json_t *json_params,  json_t **result, void *data) {
+    org::genivi::MediaManager::Player::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+    org::genivi::MediaManager::Player::RepeatStatus response;
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    m_playerProxy->dequeueAll(callStatus, error);
+    *result = json_string("");
+}
 void capi_client_player_set_xwalk_instance (XW_Instance instance) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
     CAPIClientPlayer *b = CAPIClientPlayer::instance();
@@ -1002,4 +1017,9 @@ int capi_client_player_dequeueIndex (json_t *json_params, json_t **result, void 
     std::cout << "In method " << __FUNCTION__ << std::endl;
     CAPIClientPlayer *b = CAPIClientPlayer::instance();
     return b->dequeueIndex(json_params, result, data);
+}
+int capi_client_player_dequeueAll (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->dequeueAll(json_params, result, data);
 }

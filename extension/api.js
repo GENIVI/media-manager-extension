@@ -678,6 +678,13 @@ Player.prototype.dequeueIndex = function (cb) {
                                 });
 };
 
+Player.prototype.emptyPlayQueue = function (cb) {
+    return this.jsonRPC.request('dequeueAll', [],
+                                function (msg, error) {
+                                    cb (msg, error);
+                                });
+};
+
 function jsonRPC () {
     this.idCtr = 1;
 }

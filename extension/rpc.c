@@ -75,6 +75,7 @@ static struct jsonrpc_method_entry_t method_table[] = {
     { "getPosition", capi_client_player_getPosition, "o"},
     { "getCurrentPlayQueue", capi_client_player_getCurrentPlayQueue, "o"},
     { "dequeueIndex", capi_client_player_dequeueIndex, "o"},
+    { "dequeueAll", capi_client_player_dequeueAll, "o"},
     { "enqueueUri", capi_client_player_enqueueUri, "o"},
     { NULL },
 };
