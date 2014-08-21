@@ -665,6 +665,18 @@ Player.prototype.getCurrentPlayQueue = function (cb) {
                                     cb (JSON.parse(msg), error);
                                 });
 };
+Player.prototype.enqueueUri = function (uri, cb) {
+    return this.jsonRPC.request('enqueueUri', [uri],
+                                function (msg, error) {
+                                    cb (msg, error);
+                                });
+};
+Player.prototype.dequeueIndex = function (cb) {
+    return this.jsonRPC.request('dequeueIndex', [],
+                                function (msg, error) {
+                                    cb (msg, error);
+                                });
+};
 
 function jsonRPC () {
     this.idCtr = 1;

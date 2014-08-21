@@ -785,6 +785,7 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
 }
 
 int CAPIClientPlayer::getCurrentPlayQueue (json_t *json_params,  json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
     org::genivi::MediaManager::Player::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
@@ -800,8 +801,43 @@ int CAPIClientPlayer::getCurrentPlayQueue (json_t *json_params,  json_t **result
     *result = json_string(response.c_str());
     return 0;
 }
-int CAPIClientPlayer::enqueueUri (json_t *json_params,  json_t **result, void *data) {}
-int CAPIClientPlayer::dequeueIndex (json_t *json_params,  json_t **result, void *data) {}
+int CAPIClientPlayer::enqueueUri (json_t *json_params,  json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    org::genivi::MediaManager::Player::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+    org::genivi::MediaManager::Player::RepeatStatus response;
+
+    json_t *p0 = json_array_get(json_params, 0);
+    const char *uri   = json_string_value (p0);
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    m_playerProxy->enqueueUri (uri, callStatus, error);
+    *result = json_string("");
+}
+int CAPIClientPlayer::dequeueIndex (json_t *json_params,  json_t **result, void *data) {
+    org::genivi::MediaManager::Player::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+    org::genivi::MediaManager::Player::RepeatStatus response;
+
+    json_t *p0 = json_array_get(json_params, 0);
+    json_int_t idx   = json_integer_value (p0);
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    m_playerProxy->dequeueIndex(idx, callStatus, error);
+    *result = json_string("");
+}
 void capi_client_player_set_xwalk_instance (XW_Instance instance) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
     CAPIClientPlayer *b = CAPIClientPlayer::instance();
