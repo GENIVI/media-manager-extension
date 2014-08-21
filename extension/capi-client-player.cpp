@@ -724,11 +724,11 @@ int CAPIClientPlayer::getCurrentTrack (json_t *json_params,  json_t **result, vo
     org::genivi::MediaManager::Player::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
-//    #if JSON_INTEGER_IS_LONG_LONG
-//    long long unsigned response;
-//    #else
+    #if __x86_64__
     long unsigned response;
-//    #endif
+    #else
+    long long unsigned response;
+    #endif
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -766,11 +766,11 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
     org::genivi::MediaManager::Player::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
-//    #if JSON_INTEGER_IS_LONG_LONG
-//    long long unsigned response;
-//    #else
+    #if __x86_64__
     long unsigned response;
-//    #endif
+    #else
+    long long unsigned response;
+    #endif
 
     if (!m_playerProxy) {
         if (!initialize()) {
