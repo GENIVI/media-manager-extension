@@ -525,7 +525,7 @@ Player.prototype.getShuffled = function (cb) {
 };
 
 /* Set the 'repeated' property
-    @param repeated: true/false
+    @param repeated: 'REPEAT', 'NO_REPEAT', 'REPEAT_SINGLE'
     @param cb: function (string msg, string error)
         - msg is never set
         - error is any potential error

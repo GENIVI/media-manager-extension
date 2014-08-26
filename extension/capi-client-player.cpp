@@ -466,7 +466,7 @@ int CAPIClientPlayer::setRepeated (json_t *json_params,  json_t **result, void *
     org::genivi::MediaManager::Player::RepeatStatus response;
 
     json_t *p0 = json_array_get(json_params, 0);
-    bool b   = json_is_true (p0);
+    std::string status   = std::string(json_string_value (p0));
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -475,11 +475,24 @@ int CAPIClientPlayer::setRepeated (json_t *json_params,  json_t **result, void *
         }
     }
 
-    m_playerProxy->getRepeatAttribute().setValue(
-        b ? org::genivi::MediaManager::Player::RepeatStatus::REPEAT :
-            org::genivi::MediaManager::Player::RepeatStatus::NO_REPEAT ,
-        callStatus,
-        response);
+    if (status == "REPEAT") {
+        m_playerProxy->getRepeatAttribute().setValue(
+            org::genivi::MediaManager::Player::RepeatStatus::REPEAT,
+            callStatus,
+            response);
+    } else if (status == "REPEAT_SINGLE") {
+        m_playerProxy->getRepeatAttribute().setValue(
+            org::genivi::MediaManager::Player::RepeatStatus::REPEAT_SINGLE,
+            callStatus,
+            response);
+    } else if (status == "NO_REPEAT") {
+        m_playerProxy->getRepeatAttribute().setValue(
+            org::genivi::MediaManager::Player::RepeatStatus::NO_REPEAT,
+            callStatus,
+            response);
+    } else {
+        std::cout << "Unknown repeat value: " << status << ", should be REPEAT, NO_REPEAT or REPEAT_SINGLE" << std::endl;
+    }
     *result = json_string("");
     return 0;
 }
