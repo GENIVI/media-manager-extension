@@ -234,7 +234,61 @@ int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, vo
 
 int CAPIClientBrowser::listContainersEx(json_t *json_params, json_t **result, void *data){return 0;}
 int CAPIClientBrowser::listItemsEx(json_t *json_params, json_t **result, void *data){return 0;}
-int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void *data){return 0;}
+
+int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void *data) {
+    CommonAPI::CallStatus callStatus;
+    org::genivi::MediaManager::Browser::BrowserError error;
+    const char *query, *container;
+    int offset, count;
+    std::vector<std::string> filter;
+    std::string resultStr;
+
+    json_t *p0 = json_array_get(json_params, 0);
+    json_t *p1 = json_array_get(json_params, 1);
+    json_t *p2 = json_array_get(json_params, 2);
+    json_t *p3 = json_array_get(json_params, 3);
+    container = json_string_value (p0);
+    offset = json_integer_value (p1);
+    count = json_integer_value (p2);
+
+    {
+        size_t index;
+        json_t *value;
+        size_t size = json_array_size(p3);
+
+        for (int i = 0; i < size; i++) {
+            value = json_array_get (p3, i);
+            filter.push_back(json_string_value (value));
+        }
+    }
+
+    query = json_string_value(json_array_get(json_params, 4));
+
+    if (!m_browserProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
+            return -1;
+        }
+    }
+
+    m_browserProxy->searchObjects (container,
+                                   query,
+                                   offset,
+                                   count,
+                                   filter,
+                                   callStatus,
+                                   resultStr,
+                                   error);
+
+    if (callStatus != CommonAPI::CallStatus::SUCCESS) {
+        std::cerr << "Remote call failed!\n";
+        return -1;
+    }
+
+    *result = json_string(resultStr.c_str());
+    return 0;
+}
+
 int CAPIClientBrowser::searchObjectsEx(json_t *json_params, json_t **result, void *data){return 0;}
 int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *data){return 0;}
 int CAPIClientBrowser::listChildrenEx(json_t *json_params, json_t **result, void *data){return 0;}

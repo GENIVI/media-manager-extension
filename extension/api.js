@@ -283,20 +283,21 @@ Browser.prototype.listChildrenEx = function (container, offset, count, filter, s
     @param offset: Offset in results list to start listing from, used when paging
     @param count: Number of results to produce
     @param filter: Keys to include in result objects
+    @param query: dLeyna query
     @param cb: function (JSON list msg, string error)
          -msg is a list of result objects, containing the keys specified
          -error is any potential error
 */
-/* NOT IMPLEMENTED */
-Browser.prototype.searchObjects = function (container, offset, count, filter, cb) {
+Browser.prototype.searchObjects = function (container, offset, count, filter, query, cb) {
     if (!('Path' in container)) {
         return -1;
     }
 
     var path = container['Path'];
 
-    return this.jsonRPC.request('searchObjects', [path, offset, count, filter],
+    return this.jsonRPC.request('searchObjects', [path, offset, count, filter, query],
                                 function (msg, error) {
+                                    console.log ('In callback, message: ' + msg);
                                     cb (JSON.parse(msg), error);
                                 });
 };
