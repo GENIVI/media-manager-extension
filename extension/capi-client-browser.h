@@ -21,20 +21,18 @@
 class CAPIClientBrowser {
 public:
 int discoverMediaManagers (json_t *json_params, json_t **result, void *data);
-int listContainers(json_t *json_params, json_t **result, void *data);
-int listItems(json_t *json_params, json_t **result, void *data);
+int listContainers(json_t *json_params, json_t **result, void *data, bool ex = false);
+int listItems(json_t *json_params, json_t **result, void *data, bool ex = false);
 int createReference(json_t *json_params, json_t **result, void *data);
 int createContainer(json_t *json_params, json_t **result, void *data);
-int listContainersEx(json_t *json_params, json_t **result, void *data);
-int listItemsEx(json_t *json_params, json_t **result, void *data);
-int searchObjects(json_t *json_params, json_t **result, void *data);
-int searchObjectsEx(json_t *json_params, json_t **result, void *data);
-int listChildren(json_t *json_params, json_t **result, void *data);
-int listChildrenEx(json_t *json_params, json_t **result, void *data);
+int searchObjects(json_t *json_params, json_t **result, void *data, bool ex = false);
+int listChildren(json_t *json_params, json_t **result, void *data, bool ex = false);
 int listIndexes(json_t *json_params, json_t **result, void *data);
 
 private:
 bool initialize();
+org::genivi::MediaManager::Browser::SortKey sortKeyStringToSortKey (std::string strKey);
+std::string sortKeyToString (org::genivi::MediaManager::Browser::SortKey sk);
 std::shared_ptr<org::genivi::MediaManager::BrowserProxy<> > m_browserProxy;
 };
 

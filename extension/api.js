@@ -167,7 +167,6 @@ Browser.prototype.listContainers = function (container, offset, count, filter, c
            functions of the Browser object. List is sorted on sortKey.
          - error is any potential error
 */
-/* NOT IMPLEMENTED */
 Browser.prototype.listContainersEx = function (container, offset, count, filter, sortKey, cb) {
     if (!('Path' in container)) {
         return -1;
@@ -215,7 +214,6 @@ Browser.prototype.listItems = function (container, offset, count, filter, cb) {
            sorted on sortKey.
          - error is any potential error
 */
-/* NOT IMPLEMENTED */
 Browser.prototype.listItemsEx = function (container, offset, count, filter, sortKey, cb) {
     if (!('Path' in container)) {
         return -1;
@@ -238,7 +236,6 @@ Browser.prototype.listItemsEx = function (container, offset, count, filter, sort
         - msg is a list of children, containing the keys specified in filter
         - error is any potential error
 */
-/* NOT IMPLEMENTED */
 Browser.prototype.listChildren = function (container, offset, count, filter, cb) {
     if (!('Path' in container)) {
         return -1;
@@ -263,7 +260,6 @@ Browser.prototype.listChildren = function (container, offset, count, filter, cb)
           sorted on sortKey
         - error is any potential error
 */
-/* NOT IMPLEMENTED */
 Browser.prototype.listChildrenEx = function (container, offset, count, filter, sortKey, cb) {
     if (!('Path' in container)) {
         return -1;
@@ -314,7 +310,6 @@ Browser.prototype.searchObjects = function (container, offset, count, filter, qu
            sorted according to sortKey
          - error is any potential error
 */
-/* NOT IMPLEMENTED */
 Browser.prototype.searchObjectsEx = function (container, offset, count, filter, sortKey, cb) {
     if (!('Path' in container)) {
         return -1;
@@ -338,7 +333,6 @@ Browser.prototype.searchObjectsEx = function (container, offset, count, filter, 
           position when sorting according to sortKey
         - error is any potential error
 */
-/* NOT IMPLEMENTED */
 Browser.prototype.listIndexes = function (container, count, filter, sortKey, cb) {
     if (!('Path' in container)) {
         return -1;

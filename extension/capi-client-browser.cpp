@@ -66,7 +66,7 @@ int CAPIClientBrowser::discoverMediaManagers (json_t *json_params, json_t **resu
     }
     return 0;
 }
-int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, void *data) {
+int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, void *data, bool ex) {
     std::vector<std::string> filter;
     CommonAPI::CallStatus status;
     std::string json;
@@ -100,24 +100,38 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
         }
     }
 
-    m_browserProxy->listContainers (path,
-                                    offset,
-                                    count,
-                                    filter,
-                                    status,
-                                    json,
-                                    error);
+    if (ex) {
+        std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
+        org::genivi::MediaManager::Browser::SortKey sortKey;
+        sortKey = sortKeyStringToSortKey (sortKeyStr);
+        m_browserProxy->listContainersEx (path,
+                                          offset,
+                                          count,
+                                          filter,
+                                          sortKey,
+                                          status,
+                                          json,
+                                          error);
+    } else
+        m_browserProxy->listContainers (path,
+                                        offset,
+                                        count,
+                                        filter,
+                                        status,
+                                        json,
+                                        error);
+
     *result = json_string(json.c_str());
     return 0;
 }
 
-int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *data) {
+int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *data, bool ex) {
     std::vector<std::string> filter;
     CommonAPI::CallStatus callStatus;
     std::string json;
     org::genivi::MediaManager::Browser::BrowserError error;
     int offset, count;
-    const char *path;
+    const char *path, *sortKeyStr;
 
     json_t *p0 = json_array_get(json_params, 0);
     json_t *p1 = json_array_get(json_params, 1);
@@ -145,13 +159,27 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
         }
     }
 
-    m_browserProxy->listItems (path,
+    if (ex) {
+        std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
+        org::genivi::MediaManager::Browser::SortKey sortKey;
+        sortKey = sortKeyStringToSortKey (sortKeyStr);
+        m_browserProxy->listItemsEx (path,
                                     offset,
                                     count,
                                     filter,
+                                    sortKey,
                                     callStatus,
                                     json,
                                     error);
+    } else {
+        m_browserProxy->listItems (path,
+                                   offset,
+                                   count,
+                                   filter,
+                                   callStatus,
+                                   json,
+                                   error);
+    }
 
     if (callStatus != CommonAPI::CallStatus::SUCCESS) {
         std::cerr << "Remote call failed!\n";
@@ -232,10 +260,7 @@ int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, vo
     return 0;
 }
 
-int CAPIClientBrowser::listContainersEx(json_t *json_params, json_t **result, void *data){return 0;}
-int CAPIClientBrowser::listItemsEx(json_t *json_params, json_t **result, void *data){return 0;}
-
-int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void *data) {
+int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void *data, bool ex) {
     CommonAPI::CallStatus callStatus;
     org::genivi::MediaManager::Browser::BrowserError error;
     const char *query, *container;
@@ -271,14 +296,29 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
         }
     }
 
-    m_browserProxy->searchObjects (container,
-                                   query,
-                                   offset,
-                                   count,
-                                   filter,
-                                   callStatus,
-                                   resultStr,
-                                   error);
+    if (ex) {
+        std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
+        org::genivi::MediaManager::Browser::SortKey sortKey;
+        sortKey = sortKeyStringToSortKey (sortKeyStr);
+        m_browserProxy->searchObjectsEx (container,
+                                         query,
+                                         offset,
+                                         count,
+                                         filter,
+                                         sortKey,
+                                         callStatus,
+                                         resultStr,
+                                         error);
+    } else {
+        m_browserProxy->searchObjects (container,
+                                       query,
+                                       offset,
+                                       count,
+                                       filter,
+                                       callStatus,
+                                       resultStr,
+                                       error);
+    }
 
     if (callStatus != CommonAPI::CallStatus::SUCCESS) {
         std::cerr << "Remote call failed!\n";
@@ -289,10 +329,32 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
     return 0;
 }
 
-int CAPIClientBrowser::searchObjectsEx(json_t *json_params, json_t **result, void *data){return 0;}
-int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *data){return 0;}
-int CAPIClientBrowser::listChildrenEx(json_t *json_params, json_t **result, void *data){return 0;}
+int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *data, bool ex){return 0;}
 int CAPIClientBrowser::listIndexes(json_t *json_params, json_t **result, void *data){return 0;}
+
+std::string CAPIClientBrowser::sortKeyToString (org::genivi::MediaManager::Browser::SortKey sk) {
+    std::string keyStr;
+    if (sk.order == org::genivi::MediaManager::Browser::SortOrder::ASCENDING)
+        keyStr += "+";
+    else
+        keyStr += "-";
+
+    keyStr += sk.keyName;
+
+    return keyStr;
+}
+
+org::genivi::MediaManager::Browser::SortKey CAPIClientBrowser::sortKeyStringToSortKey (std::string strKey) {
+    org::genivi::MediaManager::Browser::SortKey key;
+    if (strKey[0] == '+')
+        key.order = org::genivi::MediaManager::Browser::SortOrder::ASCENDING;
+    else if (strKey[0] == '-')
+        key.order = org::genivi::MediaManager::Browser::SortOrder::DESCENDING;
+    else
+        std::cout << "Unknown sort order '" << strKey[0] << "'" << std::endl;
+
+    key.keyName = strKey.substr(1);
+}
 
 int capi_client_browser_discoverMediaManagers (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
@@ -320,11 +382,11 @@ int capi_client_browser_createContainer (json_t *json_params, json_t **result, v
 }
 int capi_client_browser_listContainersEx (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
-    return b.listContainersEx(json_params, result, data);
+    return b.listContainers(json_params, result, data, true);
 }
 int capi_client_browser_listItemsEx (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
-    return b.listItemsEx(json_params, result, data);
+    return b.listItems(json_params, result, data, true);
 }
 int capi_client_browser_searchObjects (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
@@ -332,7 +394,7 @@ int capi_client_browser_searchObjects (json_t *json_params, json_t **result, voi
 }
 int capi_client_browser_searchObjectsEx (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
-    return b.searchObjectsEx(json_params, result, data);
+    return b.searchObjects(json_params, result, data, true);
 }
 int capi_client_browser_listIndexes (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
@@ -344,5 +406,5 @@ int capi_client_browser_listChildren (json_t *json_params, json_t **result, void
 }
 int capi_client_browser_listChildrenEx (json_t *json_params, json_t **result, void *data) {
     CAPIClientBrowser b;
-    return b.listChildrenEx(json_params, result, data);
+    return b.listChildren(json_params, result, data, true);
 }
