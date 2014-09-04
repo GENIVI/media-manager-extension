@@ -653,26 +653,49 @@ Player.prototype.getPosition = function (cb) {
     return this.jsonRPC.request('getPosition', [], cb);
 };
 
-
+/* Get the current play queue, as a list of items
+    @param cb: function (string msg, string error)
+        - msg is never set
+        - error is any potential error
+*/
 Player.prototype.getCurrentPlayQueue = function (cb) {
     return this.jsonRPC.request('getCurrentPlayQueue', [],
                                 function (msg, error) {
                                     cb (JSON.parse(msg), error);
                                 });
 };
+
+/* Enqueue a URI in the play queue
+    @param uri: The URI to enqueue in the play queue
+    @param cb: function (string msg, string error)
+        - msg is never set
+        - error is any potential error
+*/
 Player.prototype.enqueueUri = function (uri, cb) {
     return this.jsonRPC.request('enqueueUri', [uri],
                                 function (msg, error) {
                                     cb (msg, error);
                                 });
 };
-Player.prototype.dequeueIndex = function (cb) {
-    return this.jsonRPC.request('dequeueIndex', [],
+
+/* Dequeue the track with the specified index from the play queue
+    @param idx: Index of track to dequeue
+    @param cb: function (string msg, string error)
+        - msg is never set
+        - error is any potential error
+*/
+Player.prototype.dequeueIndex = function (idx, cb) {
+    return this.jsonRPC.request('dequeueIndex', [idx],
                                 function (msg, error) {
                                     cb (msg, error);
                                 });
 };
 
+/* Empty the play queue
+    @param cb: function (string msg, string error)
+        - msg is never set
+        - error is any potential error
+*/
 Player.prototype.emptyPlayQueue = function (cb) {
     return this.jsonRPC.request('dequeueAll', [],
                                 function (msg, error) {
