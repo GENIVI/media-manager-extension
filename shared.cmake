@@ -56,10 +56,10 @@ ADD_CUSTOM_COMMAND (OUTPUT ${MEDIAMANAGER_BINARY_DIR}/generated/mediamanager-ext
 #                            git checkout ${JSONRPC_CHECKOUT})
 
 FILE (GLOB GENERATED_SOURCES
-     ${INTERFACE_DIR}/org/genivi/MediaManager/*.cpp)
+     ${INTERFACE_DIR}/org/genivi/mediamanager/*.cpp)
 
 FILE (GLOB GENERATED_HEADERS
-     ${INTERFACE_DIR}/org/genivi/MediaManager/*.h)
+     ${INTERFACE_DIR}/org/genivi/mediamanager/*.h)
 
 ADD_CUSTOM_COMMAND (OUTPUT ${GENERATED_SOURCES} ${GENERATED_HEADERS}
                     COMMAND git submodule init &&

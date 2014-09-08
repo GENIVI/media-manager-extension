@@ -16,7 +16,7 @@
 #include "jansson.h"
 
 #ifdef __cplusplus
-#include <org/genivi/MediaManager/BrowserProxy.h>
+#include <org/genivi/mediamanager/BrowserProxy.h>
 
 class CAPIClientBrowser {
 public:
@@ -31,9 +31,9 @@ int listIndexes(json_t *json_params, json_t **result, void *data);
 
 private:
 bool initialize();
-org::genivi::MediaManager::Browser::SortKey sortKeyStringToSortKey (std::string strKey);
-std::string sortKeyToString (org::genivi::MediaManager::Browser::SortKey sk);
-std::shared_ptr<org::genivi::MediaManager::BrowserProxy<> > m_browserProxy;
+org::genivi::mediamanager::BrowserTypes::SortKey sortKeyStringToSortKey (std::string strKey);
+std::string sortKeyToString (org::genivi::mediamanager::BrowserTypes::SortKey sk);
+std::shared_ptr<org::genivi::mediamanager::BrowserProxy<> > m_browserProxy;
 };
 
 extern "C" {

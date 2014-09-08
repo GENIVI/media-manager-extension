@@ -3,7 +3,7 @@
 #include <CommonAPI/CommonAPI.h>
 #include "jansson.h"
 
-#include <org/genivi/MediaManager/PlayerProxy.h>
+#include <org/genivi/mediamanager/PlayerProxy.h>
 
 #include "capi-client-player.h"
 #include "rpc.h"
@@ -19,9 +19,9 @@ CAPIClientPlayer* CAPIClientPlayer::instance() {
 }
 
 void CAPIClientPlayer::registerEvents() {
-    m_playerProxy->getPlaybackStatusAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::PlaybackStatus& status) {
+    m_playerProxy->getPlaybackStatusAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::PlaybackStatus& status) {
         std::cout << "Playback status changed!" << std::endl;
-        if (status == org::genivi::MediaManager::Player::PlaybackStatus::PLAYING) {
+        if (status == org::genivi::mediamanager::PlayerTypes::PlaybackStatus::PLAYING) {
             rpc_send_notification(xw_instance, "PlaybackStatus", "\"PLAYING\"");
         } else {
             rpc_send_notification(xw_instance, "PlaybackStatus", "\"PAUSED\"");
@@ -35,60 +35,60 @@ void CAPIClientPlayer::registerEvents() {
         rpc_send_notification(xw_instance, "CurrentTrack", trackIdxStr);
     });
 
-    m_playerProxy->getMuteAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::MuteStatus& status) {
-        if (status == org::genivi::MediaManager::Player::MuteStatus::MUTED)
+    m_playerProxy->getMuteAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::MuteStatus& status) {
+        if (status == org::genivi::mediamanager::PlayerTypes::MuteStatus::MUTED)
             rpc_send_notification(xw_instance, "Mute", "true");
         else
             rpc_send_notification(xw_instance, "Mute", "false");
     });
 
-    m_playerProxy->getShuffleAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::ShuffleStatus& status) {
-        if (status == org::genivi::MediaManager::Player::ShuffleStatus::SHUFFLE)
+    m_playerProxy->getShuffleAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::ShuffleStatus& status) {
+        if (status == org::genivi::mediamanager::PlayerTypes::ShuffleStatus::SHUFFLE)
             rpc_send_notification(xw_instance, "Shuffle", "true");
         else
             rpc_send_notification(xw_instance, "Shuffle", "false");
     });
 
-    m_playerProxy->getRepeatAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RepeatStatus& status) {
-        if (status == org::genivi::MediaManager::Player::RepeatStatus::REPEAT)
+    m_playerProxy->getRepeatAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::RepeatStatus& status) {
+        if (status == org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT)
             rpc_send_notification(xw_instance, "Repeat", "true");
         else
             rpc_send_notification(xw_instance, "Repeat", "false");
     });
 
-    m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const org::genivi::MediaManager::Player::RateStatus& status) {
+    m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::RateStatus& status) {
         int rate = 1;
         char rateStr[5];
 
         switch (status) {
-            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_16:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_16:
                 rate = -16;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_8:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_8:
                 rate = -8;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_4:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_4:
                 rate = -4;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_2:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_2:
                 rate = -2;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_NEG_1:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_1:
                 rate = -1;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_1:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_1:
                 rate = 1;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_2:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_2:
                 rate = 2;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_4:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_4:
                 rate = 4;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_8:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_8:
                 rate = 8;
                 break;
-            case org::genivi::MediaManager::Player::RateStatus::RATE_16:
+            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_16:
                 rate = 16;
                 break;
             default:
@@ -156,8 +156,8 @@ bool CAPIClientPlayer::initialize () {
         std::cerr << "Error: Unable to create factory!\n";
         return -1;
     }
-    const std::string commonApiAddress = "local:org.genivi.MediaManager.Player:org.genivi.MediaManager.Player";
-    m_playerProxy = factory->buildProxy<org::genivi::MediaManager::PlayerProxy>(commonApiAddress);
+    const std::string commonApiAddress = "local:org.genivi.mediamanager.Player:org.genivi.mediamanager.Player";
+    m_playerProxy = factory->buildProxy<org::genivi::mediamanager::PlayerProxy>(commonApiAddress);
     if (!m_playerProxy) {
         std::cerr << "Error: Unable to build player proxy!\n";
         return -1;
@@ -178,7 +178,7 @@ bool CAPIClientPlayer::initialize () {
     }
 
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::PlaybackStatus playbackStatus;
+    org::genivi::mediamanager::PlayerTypes::PlaybackStatus playbackStatus;
 
     m_playerProxy->getPlaybackStatusAttribute().getValue(callStatus, playbackStatus);
     if (callStatus != CommonAPI::CallStatus::SUCCESS) {
@@ -193,7 +193,7 @@ bool CAPIClientPlayer::initialize () {
 int CAPIClientPlayer::openUri (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
     const char *uri;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     json_t *p0 = json_array_get(json_params, 0);
@@ -213,7 +213,7 @@ int CAPIClientPlayer::openUri (json_t *json_params, json_t **result, void *data)
 
 int CAPIClientPlayer::pause (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     if (!m_playerProxy) {
@@ -230,7 +230,7 @@ int CAPIClientPlayer::pause (json_t *json_params,  json_t **result, void *data) 
 
 int CAPIClientPlayer::play (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     if (!m_playerProxy) {
@@ -247,7 +247,7 @@ int CAPIClientPlayer::play (json_t *json_params,  json_t **result, void *data) {
 
 int CAPIClientPlayer::stop (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     if (!m_playerProxy) {
@@ -265,7 +265,7 @@ int CAPIClientPlayer::stop (json_t *json_params,  json_t **result, void *data) {
 
 int CAPIClientPlayer::playPause (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     if (!m_playerProxy) {
@@ -282,7 +282,7 @@ int CAPIClientPlayer::playPause (json_t *json_params,  json_t **result, void *da
 
 int CAPIClientPlayer::next (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     if (!m_playerProxy) {
@@ -298,7 +298,7 @@ int CAPIClientPlayer::next (json_t *json_params,  json_t **result, void *data) {
 }
 int CAPIClientPlayer::openPlaylist (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     json_t *p0 = json_array_get(json_params, 0);
@@ -317,7 +317,7 @@ int CAPIClientPlayer::openPlaylist (json_t *json_params,  json_t **result, void 
 }
 int CAPIClientPlayer::previous (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     if (!m_playerProxy) {
@@ -333,7 +333,7 @@ int CAPIClientPlayer::previous (json_t *json_params,  json_t **result, void *dat
 }
 int CAPIClientPlayer::seek (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     json_t *p0 = json_array_get(json_params, 0);
@@ -352,7 +352,7 @@ int CAPIClientPlayer::seek (json_t *json_params,  json_t **result, void *data) {
 }
 int CAPIClientPlayer::setPosition (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     json_t *p0 = json_array_get(json_params, 0);
@@ -371,9 +371,9 @@ int CAPIClientPlayer::setPosition (json_t *json_params,  json_t **result, void *
 }
 int CAPIClientPlayer::setMuted (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::MuteStatus response;
+    org::genivi::mediamanager::PlayerTypes::MuteStatus response;
 
     json_t *p0 = json_array_get(json_params, 0);
     bool muted   = json_is_true (p0);
@@ -386,8 +386,8 @@ int CAPIClientPlayer::setMuted (json_t *json_params,  json_t **result, void *dat
     }
 
     m_playerProxy->getMuteAttribute().setValue(
-        muted ? org::genivi::MediaManager::Player::MuteStatus::MUTED :
-                org::genivi::MediaManager::Player::MuteStatus::UNMUTED ,
+        muted ? org::genivi::mediamanager::PlayerTypes::MuteStatus::MUTED :
+                org::genivi::mediamanager::PlayerTypes::MuteStatus::UNMUTED ,
         callStatus,
         response);
     *result = json_string("");
@@ -395,9 +395,9 @@ int CAPIClientPlayer::setMuted (json_t *json_params,  json_t **result, void *dat
 }
 int CAPIClientPlayer::getMuted (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::MuteStatus response;
+    org::genivi::mediamanager::PlayerTypes::MuteStatus response;
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -407,7 +407,7 @@ int CAPIClientPlayer::getMuted (json_t *json_params,  json_t **result, void *dat
     }
 
     m_playerProxy->getMuteAttribute().getValue(callStatus, response);
-    if (response == org::genivi::MediaManager::Player::MuteStatus::MUTED) {
+    if (response == org::genivi::mediamanager::PlayerTypes::MuteStatus::MUTED) {
         *result = json_true();
     } else {
         *result = json_false();
@@ -416,9 +416,9 @@ int CAPIClientPlayer::getMuted (json_t *json_params,  json_t **result, void *dat
 }
 int CAPIClientPlayer::setShuffled (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::ShuffleStatus response;
+    org::genivi::mediamanager::PlayerTypes::ShuffleStatus response;
 
     json_t *p0 = json_array_get(json_params, 0);
     bool b   = json_is_true (p0);
@@ -431,8 +431,8 @@ int CAPIClientPlayer::setShuffled (json_t *json_params,  json_t **result, void *
     }
 
     m_playerProxy->getShuffleAttribute().setValue(
-        b ? org::genivi::MediaManager::Player::ShuffleStatus::SHUFFLE :
-            org::genivi::MediaManager::Player::ShuffleStatus::UNSHUFFLE ,
+        b ? org::genivi::mediamanager::PlayerTypes::ShuffleStatus::SHUFFLE :
+            org::genivi::mediamanager::PlayerTypes::ShuffleStatus::UNSHUFFLE ,
         callStatus,
         response);
     *result = json_string("");
@@ -440,9 +440,9 @@ int CAPIClientPlayer::setShuffled (json_t *json_params,  json_t **result, void *
 }
 int CAPIClientPlayer::getShuffled (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::ShuffleStatus response;
+    org::genivi::mediamanager::PlayerTypes::ShuffleStatus response;
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -452,7 +452,7 @@ int CAPIClientPlayer::getShuffled (json_t *json_params,  json_t **result, void *
     }
 
     m_playerProxy->getShuffleAttribute().getValue(callStatus, response);
-    if (response == org::genivi::MediaManager::Player::ShuffleStatus::SHUFFLE) {
+    if (response == org::genivi::mediamanager::PlayerTypes::ShuffleStatus::SHUFFLE) {
         *result = json_true();
     } else {
         *result = json_false();
@@ -461,9 +461,9 @@ int CAPIClientPlayer::getShuffled (json_t *json_params,  json_t **result, void *
 }
 int CAPIClientPlayer::setRepeated (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::RepeatStatus response;
+    org::genivi::mediamanager::PlayerTypes::RepeatStatus response;
 
     json_t *p0 = json_array_get(json_params, 0);
     std::string status   = std::string(json_string_value (p0));
@@ -477,17 +477,17 @@ int CAPIClientPlayer::setRepeated (json_t *json_params,  json_t **result, void *
 
     if (status == "REPEAT") {
         m_playerProxy->getRepeatAttribute().setValue(
-            org::genivi::MediaManager::Player::RepeatStatus::REPEAT,
+            org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT,
             callStatus,
             response);
     } else if (status == "REPEAT_SINGLE") {
         m_playerProxy->getRepeatAttribute().setValue(
-            org::genivi::MediaManager::Player::RepeatStatus::REPEAT_SINGLE,
+            org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT_SINGLE,
             callStatus,
             response);
     } else if (status == "NO_REPEAT") {
         m_playerProxy->getRepeatAttribute().setValue(
-            org::genivi::MediaManager::Player::RepeatStatus::NO_REPEAT,
+            org::genivi::mediamanager::PlayerTypes::RepeatStatus::NO_REPEAT,
             callStatus,
             response);
     } else {
@@ -498,9 +498,9 @@ int CAPIClientPlayer::setRepeated (json_t *json_params,  json_t **result, void *
 }
 int CAPIClientPlayer::getRepeated (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::RepeatStatus response;
+    org::genivi::mediamanager::PlayerTypes::RepeatStatus response;
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -510,7 +510,7 @@ int CAPIClientPlayer::getRepeated (json_t *json_params,  json_t **result, void *
     }
 
     m_playerProxy->getRepeatAttribute().getValue(callStatus, response);
-    if (response == org::genivi::MediaManager::Player::RepeatStatus::REPEAT) {
+    if (response == org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT) {
         *result = json_true();
     } else {
         *result = json_false();
@@ -519,10 +519,10 @@ int CAPIClientPlayer::getRepeated (json_t *json_params,  json_t **result, void *
 }
 int CAPIClientPlayer::setRate (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::RateStatus response;
-    org::genivi::MediaManager::Player::RateStatus request;
+    org::genivi::mediamanager::PlayerTypes::RateStatus response;
+    org::genivi::mediamanager::PlayerTypes::RateStatus request;
 
     json_t *p0 = json_array_get(json_params, 0);
     int rate   = json_integer_value (p0);
@@ -536,19 +536,19 @@ int CAPIClientPlayer::setRate (json_t *json_params,  json_t **result, void *data
 
     switch (rate) {
         case 1:
-            request = org::genivi::MediaManager::Player::RateStatus::RATE_1;
+            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_1;
             break;
         case 2:
-            request = org::genivi::MediaManager::Player::RateStatus::RATE_2;
+            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_2;
             break;
         case 4:
-            request = org::genivi::MediaManager::Player::RateStatus::RATE_4;
+            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_4;
             break;
         case 8:
-            request = org::genivi::MediaManager::Player::RateStatus::RATE_8;
+            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_8;
             break;
         case 16:
-            request = org::genivi::MediaManager::Player::RateStatus::RATE_16;
+            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_16;
             break;
     }
 
@@ -561,9 +561,9 @@ int CAPIClientPlayer::setRate (json_t *json_params,  json_t **result, void *data
 }
 int CAPIClientPlayer::getRate (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::RateStatus response;
+    org::genivi::mediamanager::PlayerTypes::RateStatus response;
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -574,19 +574,19 @@ int CAPIClientPlayer::getRate (json_t *json_params,  json_t **result, void *data
 
     m_playerProxy->getRateAttribute().getValue(callStatus, response);
     switch (response) {
-        case org::genivi::MediaManager::Player::RateStatus::RATE_1:
+        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_1:
             *result = json_integer(1);
             break;
-        case org::genivi::MediaManager::Player::RateStatus::RATE_2:
+        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_2:
             *result = json_integer(2);
             break;
-        case org::genivi::MediaManager::Player::RateStatus::RATE_4:
+        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_4:
             *result = json_integer(4);
             break;
-        case org::genivi::MediaManager::Player::RateStatus::RATE_8:
+        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_8:
             *result = json_integer(8);
             break;
-        case org::genivi::MediaManager::Player::RateStatus::RATE_16:
+        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_16:
             *result = json_integer(16);
             break;
     }
@@ -594,7 +594,7 @@ int CAPIClientPlayer::getRate (json_t *json_params,  json_t **result, void *data
 }
 int CAPIClientPlayer::getVolume (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
     double response;
 
@@ -611,7 +611,7 @@ int CAPIClientPlayer::getVolume (json_t *json_params,  json_t **result, void *da
 }
 int CAPIClientPlayer::setVolume (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
     double response;
 
@@ -634,7 +634,7 @@ int CAPIClientPlayer::setVolume (json_t *json_params,  json_t **result, void *da
 }
 int CAPIClientPlayer::getCanGoNext (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
     bool response;
 
@@ -654,7 +654,7 @@ int CAPIClientPlayer::getCanGoNext (json_t *json_params,  json_t **result, void 
 }
 int CAPIClientPlayer::getCanGoPrevious (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
     bool response;
 
@@ -674,7 +674,7 @@ int CAPIClientPlayer::getCanGoPrevious (json_t *json_params,  json_t **result, v
 }
 int CAPIClientPlayer::getCanPause (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
     bool response;
 
@@ -694,7 +694,7 @@ int CAPIClientPlayer::getCanPause (json_t *json_params,  json_t **result, void *
 }
 int CAPIClientPlayer::getCanPlay (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
     bool response;
 
@@ -714,7 +714,7 @@ int CAPIClientPlayer::getCanPlay (json_t *json_params,  json_t **result, void *d
 }
 int CAPIClientPlayer::getCanSeek (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
     bool response;
 
@@ -734,7 +734,7 @@ int CAPIClientPlayer::getCanSeek (json_t *json_params,  json_t **result, void *d
 }
 int CAPIClientPlayer::getCurrentTrack (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     #if __x86_64__
@@ -756,9 +756,9 @@ int CAPIClientPlayer::getCurrentTrack (json_t *json_params,  json_t **result, vo
 }
 int CAPIClientPlayer::getPlaybackStatus (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::PlaybackStatus response;
+    org::genivi::mediamanager::PlayerTypes::PlaybackStatus response;
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -768,7 +768,7 @@ int CAPIClientPlayer::getPlaybackStatus (json_t *json_params,  json_t **result, 
     }
 
     m_playerProxy->getPlaybackStatusAttribute().getValue(callStatus, response);
-    if (response == org::genivi::MediaManager::Player::PlaybackStatus::PLAYING)
+    if (response == org::genivi::mediamanager::PlayerTypes::PlaybackStatus::PLAYING)
         *result = json_string("PLAYING");
     else
         *result = json_string("PAUSED");
@@ -776,7 +776,7 @@ int CAPIClientPlayer::getPlaybackStatus (json_t *json_params,  json_t **result, 
 }
 int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     #if __x86_64__
@@ -799,7 +799,7 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
 
 int CAPIClientPlayer::getCurrentPlayQueue (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
 
     if (!m_playerProxy) {
@@ -816,9 +816,9 @@ int CAPIClientPlayer::getCurrentPlayQueue (json_t *json_params,  json_t **result
 }
 int CAPIClientPlayer::enqueueUri (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::RepeatStatus response;
+    org::genivi::mediamanager::PlayerTypes::RepeatStatus response;
 
     json_t *p0 = json_array_get(json_params, 0);
     const char *uri   = json_string_value (p0);
@@ -834,9 +834,9 @@ int CAPIClientPlayer::enqueueUri (json_t *json_params,  json_t **result, void *d
     *result = json_string("");
 }
 int CAPIClientPlayer::dequeueIndex (json_t *json_params,  json_t **result, void *data) {
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::RepeatStatus response;
+    org::genivi::mediamanager::PlayerTypes::RepeatStatus response;
 
     json_t *p0 = json_array_get(json_params, 0);
     json_int_t idx   = json_integer_value (p0);
@@ -852,9 +852,9 @@ int CAPIClientPlayer::dequeueIndex (json_t *json_params,  json_t **result, void 
     *result = json_string("");
 }
 int CAPIClientPlayer::dequeueAll (json_t *json_params,  json_t **result, void *data) {
-    org::genivi::MediaManager::Player::PlayerError error;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Player::RepeatStatus response;
+    org::genivi::mediamanager::PlayerTypes::RepeatStatus response;
 
     if (!m_playerProxy) {
         if (!initialize()) {

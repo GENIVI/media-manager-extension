@@ -3,7 +3,7 @@
 #include <CommonAPI/CommonAPI.h>
 #include "jansson.h"
 
-#include <org/genivi/MediaManager/BrowserProxy.h>
+#include <org/genivi/mediamanager/BrowserProxy.h>
 
 #include "capi-client-browser.h"
 #include "rpc.h"
@@ -21,8 +21,8 @@ bool CAPIClientBrowser::initialize () {
         std::cerr << "Error: Unable to create factory!\n";
         return false;
     }
-    const std::string commonApiAddress = "local:org.genivi.MediaManager.Browser:org.genivi.MediaManager.Browser";
-    m_browserProxy = factory->buildProxy<org::genivi::MediaManager::BrowserProxy>(commonApiAddress);
+    const std::string commonApiAddress = "local:org.genivi.mediamanager.Browser:org.genivi.mediamanager.Browser";
+    m_browserProxy = factory->buildProxy<org::genivi::mediamanager::BrowserProxy>(commonApiAddress);
     if (!m_browserProxy) {
         std::cerr << "Error: Unable to build browser proxy!\n";
         return false;
@@ -47,7 +47,7 @@ bool CAPIClientBrowser::initialize () {
 
 int CAPIClientBrowser::discoverMediaManagers (json_t *json_params, json_t **result, void *data) {
     CommonAPI::CallStatus status;
-    org::genivi::MediaManager::Browser::BrowserError error;
+    org::genivi::mediamanager::BrowserTypes::BrowserError error;
     *result = json_array();
     std::vector<std::string> managers;
 
@@ -70,7 +70,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
     std::vector<std::string> filter;
     CommonAPI::CallStatus status;
     std::string json;
-    org::genivi::MediaManager::Browser::BrowserError error;
+    org::genivi::mediamanager::BrowserTypes::BrowserError error;
     int offset, count;
     const char *path;
 
@@ -102,7 +102,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
 
     if (ex) {
         std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
-        org::genivi::MediaManager::Browser::SortKey sortKey;
+        org::genivi::mediamanager::BrowserTypes::SortKey sortKey;
         sortKey = sortKeyStringToSortKey (sortKeyStr);
         m_browserProxy->listContainersEx (path,
                                           offset,
@@ -129,7 +129,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
     std::vector<std::string> filter;
     CommonAPI::CallStatus callStatus;
     std::string json;
-    org::genivi::MediaManager::Browser::BrowserError error;
+    org::genivi::mediamanager::BrowserTypes::BrowserError error;
     int offset, count;
     const char *path, *sortKeyStr;
 
@@ -161,7 +161,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
 
     if (ex) {
         std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
-        org::genivi::MediaManager::Browser::SortKey sortKey;
+        org::genivi::mediamanager::BrowserTypes::SortKey sortKey;
         sortKey = sortKeyStringToSortKey (sortKeyStr);
         m_browserProxy->listItemsEx (path,
                                     offset,
@@ -192,7 +192,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
 
 int CAPIClientBrowser::createReference (json_t *json_params, json_t **result, void *data) {
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Browser::BrowserError error;
+    org::genivi::mediamanager::BrowserTypes::BrowserError error;
     const char *path, *object;
     std::string newPath;
 
@@ -225,7 +225,7 @@ int CAPIClientBrowser::createReference (json_t *json_params, json_t **result, vo
 
 int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, void *data) {
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Browser::BrowserError error;
+    org::genivi::mediamanager::BrowserTypes::BrowserError error;
     const char *path, *container;
     std::string newPath;
     std::vector<std::string> childTypes;
@@ -262,7 +262,7 @@ int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, vo
 
 int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void *data, bool ex) {
     CommonAPI::CallStatus callStatus;
-    org::genivi::MediaManager::Browser::BrowserError error;
+    org::genivi::mediamanager::BrowserTypes::BrowserError error;
     const char *query, *container;
     int offset, count;
     std::vector<std::string> filter;
@@ -298,7 +298,7 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
 
     if (ex) {
         std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
-        org::genivi::MediaManager::Browser::SortKey sortKey;
+        org::genivi::mediamanager::BrowserTypes::SortKey sortKey;
         sortKey = sortKeyStringToSortKey (sortKeyStr);
         m_browserProxy->searchObjectsEx (container,
                                          query,
@@ -332,9 +332,9 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
 int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *data, bool ex){return 0;}
 int CAPIClientBrowser::listIndexes(json_t *json_params, json_t **result, void *data){return 0;}
 
-std::string CAPIClientBrowser::sortKeyToString (org::genivi::MediaManager::Browser::SortKey sk) {
+std::string CAPIClientBrowser::sortKeyToString (org::genivi::mediamanager::BrowserTypes::SortKey sk) {
     std::string keyStr;
-    if (sk.order == org::genivi::MediaManager::Browser::SortOrder::ASCENDING)
+    if (sk.order == org::genivi::mediamanager::BrowserTypes::SortOrder::ASCENDING)
         keyStr += "+";
     else
         keyStr += "-";
@@ -344,12 +344,12 @@ std::string CAPIClientBrowser::sortKeyToString (org::genivi::MediaManager::Brows
     return keyStr;
 }
 
-org::genivi::MediaManager::Browser::SortKey CAPIClientBrowser::sortKeyStringToSortKey (std::string strKey) {
-    org::genivi::MediaManager::Browser::SortKey key;
+org::genivi::mediamanager::BrowserTypes::SortKey CAPIClientBrowser::sortKeyStringToSortKey (std::string strKey) {
+    org::genivi::mediamanager::BrowserTypes::SortKey key;
     if (strKey[0] == '+')
-        key.order = org::genivi::MediaManager::Browser::SortOrder::ASCENDING;
+        key.order = org::genivi::mediamanager::BrowserTypes::SortOrder::ASCENDING;
     else if (strKey[0] == '-')
-        key.order = org::genivi::MediaManager::Browser::SortOrder::DESCENDING;
+        key.order = org::genivi::mediamanager::BrowserTypes::SortOrder::DESCENDING;
     else
         std::cout << "Unknown sort order '" << strKey[0] << "'" << std::endl;
 
