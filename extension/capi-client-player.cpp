@@ -797,6 +797,29 @@ int CAPIClientPlayer::getPosition (json_t *json_params,  json_t **result, void *
     return 0;
 }
 
+int CAPIClientPlayer::getDuration (json_t *json_params,  json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    org::genivi::mediamanager::PlayerTypes::PlayerError error;
+    CommonAPI::CallStatus callStatus;
+
+    #if __x86_64__
+    long unsigned response;
+    #else
+    long long unsigned response;
+    #endif
+
+    if (!m_playerProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for indexer" << std::endl;
+            return -1;
+        }
+    }
+
+    m_playerProxy->getDurationAttribute().getValue(callStatus, response);
+    *result = json_integer(response);
+    return 0;
+}
+
 int CAPIClientPlayer::getCurrentPlayQueue (json_t *json_params,  json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;
     org::genivi::mediamanager::PlayerTypes::PlayerError error;
@@ -1015,6 +1038,11 @@ int capi_client_player_getPosition (json_t *json_params, json_t **result, void *
     std::cout << "In method " << __FUNCTION__ << std::endl;
     CAPIClientPlayer *b = CAPIClientPlayer::instance();
     return b->getPosition(json_params, result, data);
+}
+int capi_client_player_getDuration (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In method " << __FUNCTION__ << std::endl;
+    CAPIClientPlayer *b = CAPIClientPlayer::instance();
+    return b->getDuration(json_params, result, data);
 }
 int capi_client_player_getCurrentPlayQueue (json_t *json_params, json_t **result, void *data) {
     std::cout << "In method " << __FUNCTION__ << std::endl;

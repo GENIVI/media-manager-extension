@@ -46,6 +46,7 @@ bool CAPIClientBrowser::initialize () {
 }
 
 int CAPIClientBrowser::discoverMediaManagers (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CommonAPI::CallStatus status;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
     *result = json_array();
@@ -67,6 +68,7 @@ int CAPIClientBrowser::discoverMediaManagers (json_t *json_params, json_t **resu
     return 0;
 }
 int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, void *data, bool ex) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     std::vector<std::string> filter;
     CommonAPI::CallStatus status;
     std::string json;
@@ -93,6 +95,11 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
     offset = json_integer_value (p1);
     count  = json_integer_value (p2);
 
+    if (!path) {
+        std::cout << "Invalid parameters for " << __FUNCTION__ << std::endl;
+        return 0;
+    }
+
     if (!m_browserProxy) {
         if (!initialize()) {
             std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
@@ -101,6 +108,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
     }
 
     if (ex) {
+        std::cout << "Using EX variant" << std::endl;
         std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
         org::genivi::mediamanager::BrowserTypes::SortKey sortKey;
         sortKey = sortKeyStringToSortKey (sortKeyStr);
@@ -113,6 +121,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
                                           json,
                                           error);
     } else
+        std::cout << "Using standard variant" << std::endl;
         m_browserProxy->listContainers (path,
                                         offset,
                                         count,
@@ -126,6 +135,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
 }
 
 int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *data, bool ex) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     std::vector<std::string> filter;
     CommonAPI::CallStatus callStatus;
     std::string json;
@@ -191,6 +201,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
 }
 
 int CAPIClientBrowser::createReference (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CommonAPI::CallStatus callStatus;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
     const char *path, *object;
@@ -224,6 +235,7 @@ int CAPIClientBrowser::createReference (json_t *json_params, json_t **result, vo
 }
 
 int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CommonAPI::CallStatus callStatus;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
     const char *path, *container;
@@ -261,6 +273,7 @@ int CAPIClientBrowser::createContainer (json_t *json_params, json_t **result, vo
 }
 
 int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void *data, bool ex) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CommonAPI::CallStatus callStatus;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
     const char *query, *container;
@@ -329,10 +342,77 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
     return 0;
 }
 
-int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *data, bool ex){return 0;}
+int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *data, bool ex){
+    std::cout << "In function " << __FUNCTION__ << std::endl;
+    CommonAPI::CallStatus callStatus;
+    org::genivi::mediamanager::BrowserTypes::BrowserError error;
+    const char *container;
+    int offset, count;
+    std::vector<std::string> filter;
+    std::string resultStr;
+
+    json_t *p0 = json_array_get(json_params, 0);
+    json_t *p1 = json_array_get(json_params, 1);
+    json_t *p2 = json_array_get(json_params, 2);
+    json_t *p3 = json_array_get(json_params, 3);
+    container = json_string_value (p0);
+    offset = json_integer_value (p1);
+    count = json_integer_value (p2);
+
+    {
+        size_t index;
+        json_t *value;
+        size_t size = json_array_size(p3);
+
+        for (int i = 0; i < size; i++) {
+            value = json_array_get (p3, i);
+            filter.push_back(json_string_value (value));
+        }
+    }
+
+    if (!m_browserProxy) {
+        if (!initialize()) {
+            std::cerr << "Failed to initialize CAPI client for browser" << std::endl;
+            return -1;
+        }
+    }
+
+    if (ex) {
+        std::cout << "Using EX variant" << std::endl;
+        std::string sortKeyStr = json_string_value(json_array_get(json_params, 4));
+        org::genivi::mediamanager::BrowserTypes::SortKey sortKey;
+        sortKey = sortKeyStringToSortKey (sortKeyStr);
+        m_browserProxy->listChildrenEx (container,
+                                        offset,
+                                        count,
+                                        filter,
+                                        sortKey,
+                                        callStatus,
+                                        resultStr,
+                                        error);
+    } else {
+        std::cout << "Using standard variant" << std::endl;
+        m_browserProxy->listChildren (container,
+                                      offset,
+                                      count,
+                                      filter,
+                                      callStatus,
+                                      resultStr,
+                                      error);
+    }
+
+    if (callStatus != CommonAPI::CallStatus::SUCCESS) {
+        std::cerr << "Remote call failed!\n";
+        return -1;
+    }
+
+    *result = json_string(resultStr.c_str());
+    return 0;
+}
 int CAPIClientBrowser::listIndexes(json_t *json_params, json_t **result, void *data){return 0;}
 
 std::string CAPIClientBrowser::sortKeyToString (org::genivi::mediamanager::BrowserTypes::SortKey sk) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     std::string keyStr;
     if (sk.order == org::genivi::mediamanager::BrowserTypes::SortOrder::ASCENDING)
         keyStr += "+";
@@ -345,6 +425,7 @@ std::string CAPIClientBrowser::sortKeyToString (org::genivi::mediamanager::Brows
 }
 
 org::genivi::mediamanager::BrowserTypes::SortKey CAPIClientBrowser::sortKeyStringToSortKey (std::string strKey) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     org::genivi::mediamanager::BrowserTypes::SortKey key;
     if (strKey[0] == '+')
         key.order = org::genivi::mediamanager::BrowserTypes::SortOrder::ASCENDING;
@@ -354,57 +435,71 @@ org::genivi::mediamanager::BrowserTypes::SortKey CAPIClientBrowser::sortKeyStrin
         std::cout << "Unknown sort order '" << strKey[0] << "'" << std::endl;
 
     key.keyName = strKey.substr(1);
+
+    return key;
 }
 
 int capi_client_browser_discoverMediaManagers (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.discoverMediaManagers(json_params, result, data);
 }
 
 int capi_client_browser_listContainers (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.listContainers(json_params, result, data);
 }
 
 int capi_client_browser_listItems (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.listItems(json_params, result, data);
 }
 
 int capi_client_browser_createReference (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.createReference(json_params, result, data);
 }
 
 int capi_client_browser_createContainer (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.createContainer(json_params, result, data);
 }
 int capi_client_browser_listContainersEx (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.listContainers(json_params, result, data, true);
 }
 int capi_client_browser_listItemsEx (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.listItems(json_params, result, data, true);
 }
 int capi_client_browser_searchObjects (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.searchObjects(json_params, result, data);
 }
 int capi_client_browser_searchObjectsEx (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.searchObjects(json_params, result, data, true);
 }
 int capi_client_browser_listIndexes (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.listIndexes(json_params, result, data);
 }
 int capi_client_browser_listChildren (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.listChildren(json_params, result, data);
 }
 int capi_client_browser_listChildrenEx (json_t *json_params, json_t **result, void *data) {
+    std::cout << "In function " << __FUNCTION__ << std::endl;
     CAPIClientBrowser b;
     return b.listChildren(json_params, result, data, true);
 }
