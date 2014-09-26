@@ -50,10 +50,15 @@ void CAPIClientPlayer::registerEvents() {
     });
 
     m_playerProxy->getRepeatAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::RepeatStatus& status) {
-        if (status == org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT)
-            rpc_send_notification(xw_instance, "Repeat", "true");
-        else
-            rpc_send_notification(xw_instance, "Repeat", "false");
+        if (status == org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT) {
+            rpc_send_notification(xw_instance, "Repeat", "\"REPEAT\"");
+        } else if (status == org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT_SINGLE) {
+            rpc_send_notification(xw_instance, "Repeat", "\"REPEAT_SINGLE\"");
+        } else if (status == org::genivi::mediamanager::PlayerTypes::RepeatStatus::NO_REPEAT) {
+            rpc_send_notification(xw_instance, "Repeat", "\"NO_REPEAT\"");
+        } else {
+            std::cout << "Unknown repeat value, should be REPEAT, NO_REPEAT or REPEAT_SINGLE" << std::endl;
+        }
     });
 
     m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::RateStatus& status) {
@@ -511,9 +516,13 @@ int CAPIClientPlayer::getRepeated (json_t *json_params,  json_t **result, void *
 
     m_playerProxy->getRepeatAttribute().getValue(callStatus, response);
     if (response == org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT) {
-        *result = json_true();
+        *result = json_string("REPEAT");
+    } else if (response == org::genivi::mediamanager::PlayerTypes::RepeatStatus::REPEAT_SINGLE) {
+        *result = json_string("REPEAT_SINGLE");
+    } else if (response == org::genivi::mediamanager::PlayerTypes::RepeatStatus::NO_REPEAT) {
+        *result = json_string("NO_REPEAT");
     } else {
-        *result = json_false();
+        std::cout << "Unknown repeat value, should be REPEAT, NO_REPEAT or REPEAT_SINGLE" << std::endl;
     }
     return 0;
 }
