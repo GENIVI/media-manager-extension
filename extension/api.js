@@ -580,6 +580,7 @@ Player.prototype.getMuted = function (cb) {
 /** @description Set the 'shuffled' property. When tracks are shuffled, the
  *  CurrentTrack signal will indicate tracks in a random order, as opposed to a
  *  sequential order.
+ *  @param {boolean} true to enable shuffle, false to disable
  *  @param {function} cb Callback function with the following parameters:
  *  @param {string} cb Never set (void return value)
  *  @param {string} cb is any potential error
