@@ -1,0 +1,8 @@
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/doc
+RECURSIVE              = YES
+PROJECT_NAME           = "GENIVI Media Manager CrossWalk Extension"
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/doc/frontmatter.md
+INPUT                 += @CMAKE_CURRENT_SOURCE_DIR@/extension
+USE_MDFILE_AS_MAINPAGE = @CMAKE_CURRENT_SOURCE_DIR@/doc/frontmatter.md
+ENABLE_PREPROCESSING   = NO
+

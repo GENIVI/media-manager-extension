@@ -18,6 +18,11 @@
 #ifdef __cplusplus
 #include <org/genivi/MediaManager/IndexerProxy.h>
 
+/**
+ * CommonAPI proxy for the Player interface. The functions in this class are
+ * direct connections to the CommonAPI functions of the Media Manager core
+ * component. Please see the documentation of this conponent.
+ */
 class CAPIClientIndexer {
 public:
 int getDatabasePath(json_t *json_params, json_t **result, void *data);

@@ -14,3 +14,21 @@ PROJECT (MEDIAMANAGER)
 
 ADD_SUBDIRECTORY (extension)
 ADD_SUBDIRECTORY (tests)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in
+               "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+               @ONLY)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doc/jsdoc.conf.in
+               "${CMAKE_CURRENT_BINARY_DIR}/jsdoc.conf"
+               @ONLY)
+
+ADD_CUSTOM_TARGET(doc
+              doxygen ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+              COMMENT "Generating API documentation with Doxygen" VERBATIM)
+
+ADD_CUSTOM_TARGET(jsdoc
+              jsdoc -c ${CMAKE_CURRENT_BINARY_DIR}/jsdoc.conf
+              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+              COMMENT "Generating API documentation with JSDoc" VERBATIM)

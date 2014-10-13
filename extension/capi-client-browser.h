@@ -1,4 +1,4 @@
- /**
+ /*
   * Copyright (C) 2014, Jaguar Land Rover
   *
   * Author: Jonatan Palsson <jonatan.palsson@pelagicore.com>
@@ -18,6 +18,11 @@
 #ifdef __cplusplus
 #include <org/genivi/mediamanager/BrowserProxy.h>
 
+/**
+ * CommonAPI proxy for the Browser interface. The functions in this class are
+ * direct connections to the CommonAPI functions of the Media Manager core
+ * component. Please see the documentation of this conponent.
+ */
 class CAPIClientBrowser {
 public:
 int discoverMediaManagers (json_t *json_params, json_t **result, void *data);
@@ -36,6 +41,9 @@ std::string sortKeyToString (org::genivi::mediamanager::BrowserTypes::SortKey sk
 std::shared_ptr<org::genivi::mediamanager::BrowserProxy<> > m_browserProxy;
 };
 
+/**
+ * These functions are C interfaces to the above C++ functions
+ */
 extern "C" {
 #endif
     int capi_client_browser_discoverMediaManagers (json_t *json_params, json_t **result, void *data);

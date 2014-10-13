@@ -1,0 +1,12 @@
+{
+    "plugins": [ "plugins/markdown" ],
+    "markdown": { },
+    "source": {
+        "include": ["@CMAKE_CURRENT_SOURCE_DIR@/extension/api.js"]
+    },
+    "opts": {
+        "destination": "@CMAKE_CURRENT_BINARY_DIR@/doc/jsdoc/",
+        "tutorials": "@CMAKE_CURRENT_SOURCE_DIR@/extension/tutorial"
+    }
+}
+

@@ -3,7 +3,14 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
+    /**
+     * Send a raw (as in not JSON) message to the CrossWalk application
+     *
+     * @param instance the CrossWalk instance which the message should be sent
+     * to
+     * @param message string of the message to be sent
+     */
     void sendRawMessage(XW_Instance instance, const char *message);
 #ifdef __cplusplus
 }

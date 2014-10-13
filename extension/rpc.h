@@ -1,4 +1,4 @@
- /**
+ /*
   * Copyright (C) 2014, Jaguar Land Rover
   *
   * Author: Jonatan Palsson <jonatan.palsson@pelagicore.com>
@@ -16,26 +16,27 @@
 #include "jsonrpc.h"
 #include "XW_Extension.h"
 
-/*! Various error values for RPC commands. These are typically included in
- * JSON-RPC error responses */
+/** Various error values for RPC commands. These are typically included in
+ * JSON-RPC error responses
+ */
 typedef enum {
-    /*! Used to signal to client that backend (LMS, for example) is unreachable */
+    /** Used to signal to client that backend (LMS, for example) is unreachable */
     RPC_ERROR_BACKEND_UNREACHABLE = -32001,
 
-    /*! Used to indicate that backend did reply, but the reply was invalid */
+    /** Used to indicate that backend did reply, but the reply was invalid */
     RPC_ERROR_BACKEND_REPLY_INVALID = -32002,
 
-    /*! No error encountered */
+    /** No error encountered */
     RPC_ERROR_OK = 0
 } rpc_error_t;
 
-/*!
+/**
  * Handle an incoming RPC message. Message needs to be a valid JSON-RPC 2.0
  * message.
  *
- * \param message: Valid JSON-RPC 2.0 char*
- * \returns: JSON-RPC 2.0 reply if \p message is valid
- * \returns: NULL if \p message is invalid
+ * @param message: Valid JSON-RPC 2.0 char*
+ * @return JSON-RPC 2.0 reply if message is valid
+ * @return NULL if message is invalid
  */
 char *rpc_handle_message (XW_Instance instance, const char *message);
 
@@ -43,6 +44,16 @@ char *rpc_handle_message (XW_Instance instance, const char *message);
 #ifdef __cplusplus
 extern "C" {
 #endif 
+
+/**
+ * Send a notification to the CrossWalk application. There is no response from
+ * the CrossWalk application when sending notifications from the extension.
+ * This can be used to signal state changes, for instance.
+ *
+ * @param instance the CrossWalk instance we should send the notification to
+ * @param method the 'method' to identify the notification
+ * @param params the parameters for the 'method'
+ */
 void rpc_send_notification (XW_Instance instance, const char *method, const char *params);
 #ifdef __cplusplus
 }

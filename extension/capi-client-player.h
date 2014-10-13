@@ -19,10 +19,22 @@
 #ifdef __cplusplus
 #include <org/genivi/mediamanager/PlayerProxy.h>
 
+/**
+ * CommonAPI proxy for the Browser interface. The functions in this class are
+ * direct connections to the CommonAPI functions of the Media Manager core
+ * component. Please see the documentation of this conponent.
+ */
 class CAPIClientPlayer {
 public:
 
+/**
+ * The corrent CrossWalk instance
+ */
 XW_Instance xw_instance;
+
+/**
+ * Retrieve the instance of this (singleton) class
+ */
 static CAPIClientPlayer *instance();
 
 int openUri(json_t *json_params, json_t **result, void *data);
@@ -68,6 +80,9 @@ static CAPIClientPlayer *m_instance;
 
 extern "C" {
 #endif
+    /**
+     * Set the CrossWalk instance to be used
+     */
     void capi_client_player_set_xwalk_instance(XW_Extension instance);
 
     int capi_client_player_openUri (json_t *json_params, json_t **result, void *data);

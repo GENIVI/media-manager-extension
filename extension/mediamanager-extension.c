@@ -1,4 +1,4 @@
- /**
+ /*
   * Copyright (C) 2014, Jaguar Land Rover
   *
   * Author: Jonatan Palsson <jonatan.palsson@pelagicore.com>
@@ -11,6 +11,12 @@
   * file, You can obtain one at http://mozilla.org/MPL/2.0/.
   */
 
+/**
+ * @file
+ * This module is the main entry point from CrossWalk in to the extension code.
+ * This module is responsible for opening message channels to and from
+ * CrossWalk in to the extension.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,6 +68,11 @@ static void shutdown(XW_Extension extension) {
 void sendRawMessage(XW_Instance instance, const char *message) {
     g_messaging->PostMessage(instance, message);
 }
+
+/**
+ * Initialize the CrossWalk extension. This function is called by CrossWalk
+ * when loading the extension.
+ */
 
 int32_t XW_Initialize(XW_Extension extension, XW_GetInterface get_interface) {
     g_extension = extension;
