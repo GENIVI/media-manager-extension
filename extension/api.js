@@ -67,7 +67,6 @@ function Indexer () {
     this.jsonRPC = jsonRPCInstance;
 };
 /** 
- *  @global
  *  @description: Get the path of the database file currently in use by LMS.
  *  @param cb Callback function with the following parameters:
  *  @param {string} cb the database path
@@ -78,7 +77,6 @@ Indexer.prototype.getDatabasePath = function(cb) {
 };
 
 /**
- *  @global
  *  @description Start the indexing process in LMS. Starting indexing while
  *               indexing is already commencing is an error.
  *  @param {function} cb Callback function with the following parameters:
@@ -90,7 +88,6 @@ Indexer.prototype.startIndexing = function (cb) {
 };
 
 /**
- *  @global
  *  @description Stop the indexing process. It is an error to stop an already
  *               stopped indexing.
  *  @param {function} cb Callback function with the following parameters:
@@ -102,7 +99,6 @@ Indexer.prototype.stopIndexing = function(cb) {
 };
 
 /**
- *  @global
  *  @description Get the indexer status. RUNNING means the indexer is indexing.
  *               STOPPED means the indexer has been stopped, IDLE means the
  *               indexer is idling, and waiting for events to trigger indexing
@@ -141,7 +137,6 @@ Browser.prototype.RootObject = function (id) {
 };
 
 /**
- * @global
  * @description Get a list of media manager sources, these are typically DLNA
  * servers. The items in the list should be regarded as tokens, and should not
  * be parsed or manipulated as their structure may change. If any media manager
@@ -811,12 +806,14 @@ exports.Indexer = Indexer;
 exports.Browser = Browser;
 exports.Player = Player;
 
-/* Used to register a notification handler, which will receive events such as
- * playback status changed, etc.
-    @param cb: function (string method, string parameter)
-        - msg is the property which has changed
-        - parameter is the new value of the property
-*/
+/**
+ * @global
+ * @description Used to register a notification handler, which will receive
+ * events such as playback status changed, etc.
+ *  @param {function} cb Callback function with the following parameters:
+ *  @param {string} cb the property which has changed
+ *  @param {string} cb the new value of the property
+ */
 exports.registerNotificationHandler = function (cb) {
     notificationHandler = cb;
 }
