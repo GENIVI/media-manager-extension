@@ -61,46 +61,8 @@ void CAPIClientPlayer::registerEvents() {
         }
     });
 
-    m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const org::genivi::mediamanager::PlayerTypes::RateStatus& status) {
-        int rate = 1;
+    m_playerProxy->getRateAttribute().getChangedEvent().subscribe([&](const double& rate) {
         char rateStr[5];
-
-        switch (status) {
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_16:
-                rate = -16;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_8:
-                rate = -8;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_4:
-                rate = -4;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_2:
-                rate = -2;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_NEG_1:
-                rate = -1;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_1:
-                rate = 1;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_2:
-                rate = 2;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_4:
-                rate = 4;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_8:
-                rate = 8;
-                break;
-            case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_16:
-                rate = 16;
-                break;
-            default:
-                std::cout << "Unknown rate" << std::endl;
-                return;
-        }
-
         sprintf(rateStr, "%d", rate);
 
         rpc_send_notification(xw_instance, "Rate", rateStr);
@@ -530,8 +492,7 @@ int CAPIClientPlayer::setRate (json_t *json_params,  json_t **result, void *data
     std::cout << "In method " << __FUNCTION__ << std::endl;
     org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::mediamanager::PlayerTypes::RateStatus response;
-    org::genivi::mediamanager::PlayerTypes::RateStatus request;
+    double response;
 
     json_t *p0 = json_array_get(json_params, 0);
     int rate   = json_integer_value (p0);
@@ -543,26 +504,8 @@ int CAPIClientPlayer::setRate (json_t *json_params,  json_t **result, void *data
         }
     }
 
-    switch (rate) {
-        case 1:
-            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_1;
-            break;
-        case 2:
-            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_2;
-            break;
-        case 4:
-            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_4;
-            break;
-        case 8:
-            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_8;
-            break;
-        case 16:
-            request = org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_16;
-            break;
-    }
-
     m_playerProxy->getRateAttribute().setValue(
-        request,
+        rate,
         callStatus,
         response);
     *result = json_string("");
@@ -572,7 +515,7 @@ int CAPIClientPlayer::getRate (json_t *json_params,  json_t **result, void *data
     std::cout << "In method " << __FUNCTION__ << std::endl;
     org::genivi::mediamanager::PlayerTypes::PlayerError error;
     CommonAPI::CallStatus callStatus;
-    org::genivi::mediamanager::PlayerTypes::RateStatus response;
+    double response;
 
     if (!m_playerProxy) {
         if (!initialize()) {
@@ -582,23 +525,7 @@ int CAPIClientPlayer::getRate (json_t *json_params,  json_t **result, void *data
     }
 
     m_playerProxy->getRateAttribute().getValue(callStatus, response);
-    switch (response) {
-        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_1:
-            *result = json_integer(1);
-            break;
-        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_2:
-            *result = json_integer(2);
-            break;
-        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_4:
-            *result = json_integer(4);
-            break;
-        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_8:
-            *result = json_integer(8);
-            break;
-        case org::genivi::mediamanager::PlayerTypes::RateStatus::RATE_16:
-            *result = json_integer(16);
-            break;
-    }
+    *result = json_integer(response);
     return 0;
 }
 int CAPIClientPlayer::getVolume (json_t *json_params,  json_t **result, void *data) {
