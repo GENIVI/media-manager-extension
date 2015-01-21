@@ -16,7 +16,7 @@
 #include "jansson.h"
 
 #ifdef __cplusplus
-#include <org/genivi/MediaManager/IndexerProxy.h>
+#include <org/genivi/mediamanager/IndexerProxy.h>
 
 /**
  * CommonAPI proxy for the Player interface. The functions in this class are
@@ -33,7 +33,7 @@ int getIndexerStatus(json_t *json_params, json_t **result, void *data);
 private:
 bool check_initialized();
 bool initialize();
-std::shared_ptr<org::genivi::MediaManager::IndexerProxy<> > m_indexerProxy;
+std::shared_ptr<org::genivi::mediamanager::IndexerProxy<> > m_indexerProxy;
 };
 
 extern "C" {

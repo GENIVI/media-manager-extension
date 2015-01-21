@@ -3,12 +3,12 @@
 #include <CommonAPI/CommonAPI.h>
 #include "jansson.h"
 
-#include <org/genivi/MediaManager/IndexerProxy.h>
+#include <org/genivi/mediamanager/IndexerProxy.h>
 
 #include "capi-client-indexer.h"
 #include "rpc.h"
 
-namespace MM = org::genivi::MediaManager;
+namespace MM = org::genivi::mediamanager;
 
 bool CAPIClientIndexer::check_initialized () {
     if (!m_indexerProxy) {
@@ -33,7 +33,7 @@ bool CAPIClientIndexer::initialize () {
         std::cerr << "Error: Unable to create factory!\n";
         return -1;
     }
-    const std::string commonApiAddress = "local:org.genivi.MediaManager.Indexer:org.genivi.MediaManager.Indexer";
+    const std::string commonApiAddress = "local:org.genivi.mediamanager.Indexer:org.genivi.mediamanager.Indexer";
     m_indexerProxy = factory->buildProxy<MM::IndexerProxy>(commonApiAddress);
     if (!m_indexerProxy) {
         std::cerr << "Error: Unable to build proxy!\n";
