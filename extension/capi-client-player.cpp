@@ -768,9 +768,9 @@ int CAPIClientPlayer::getCurrentPlayQueue (json_t *json_params,  json_t **result
         }
     }
 
-    std::string response;
+    org::genivi::mediamanager::MediaTypes::ResultMapList response;
     m_playerProxy->getCurrentPlayQueue(callStatus, response, error);
-    *result = json_string(response.c_str());
+    Common::BrowserMapListToJSON(response, result);
     return 0;
 }
 int CAPIClientPlayer::enqueueUri (json_t *json_params,  json_t **result, void *data) {

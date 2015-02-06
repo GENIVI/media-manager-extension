@@ -12,6 +12,7 @@
 INCLUDE (${MEDIAMANAGER_SOURCE_DIR}/shared.cmake)
 
 SET (SOURCES
+    common.cpp
     mediamanager-extension.c
     ${JSONRPC_DIR}/jsonrpc.c
     rpc.c
@@ -20,6 +21,7 @@ SET (SOURCES
     capi-client-player.cpp)
 
 SET (HEADERS
+   common.h
    ${MEDIAMANAGER_BINARY_DIR}/generated/mediamanager-extension.h
    ${JSONRPC_DIR}/jsonrpc.h
    rpc.h

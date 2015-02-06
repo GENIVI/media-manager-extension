@@ -19,6 +19,8 @@
 #ifdef __cplusplus
 #include <org/genivi/mediamanager/PlayerProxy.h>
 
+#include "common.h"
+
 /**
  * CommonAPI proxy for the Browser interface. The functions in this class are
  * direct connections to the CommonAPI functions of the Media Manager core

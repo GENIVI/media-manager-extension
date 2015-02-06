@@ -7,6 +7,7 @@
 
 #include "capi-client-browser.h"
 #include "rpc.h"
+#include "common.h"
 
 bool CAPIClientBrowser::initialize () {
     CommonAPI::Runtime::LoadState loadState;
@@ -71,7 +72,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
     std::cout << "In function " << __FUNCTION__ << std::endl;
     std::vector<std::string> filter;
     CommonAPI::CallStatus status;
-    std::string json;
+    org::genivi::mediamanager::MediaTypes::ResultMapList capiResult;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
     int offset, count;
     const char *path;
@@ -118,7 +119,7 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
                                           filter,
                                           sortKey,
                                           status,
-                                          json,
+                                          capiResult,
                                           error);
     } else
         std::cout << "Using standard variant" << std::endl;
@@ -127,10 +128,10 @@ int CAPIClientBrowser::listContainers (json_t *json_params, json_t **result, voi
                                         count,
                                         filter,
                                         status,
-                                        json,
+                                        capiResult,
                                         error);
 
-    *result = json_string(json.c_str());
+    Common::BrowserMapListToJSON(capiResult, result);
     return 0;
 }
 
@@ -138,7 +139,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
     std::cout << "In function " << __FUNCTION__ << std::endl;
     std::vector<std::string> filter;
     CommonAPI::CallStatus callStatus;
-    std::string json;
+    org::genivi::mediamanager::MediaTypes::ResultMapList capiResult;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
     int offset, count;
     const char *path, *sortKeyStr;
@@ -179,7 +180,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
                                     filter,
                                     sortKey,
                                     callStatus,
-                                    json,
+                                    capiResult,
                                     error);
     } else {
         m_browserProxy->listItems (path,
@@ -187,7 +188,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
                                    count,
                                    filter,
                                    callStatus,
-                                   json,
+                                   capiResult,
                                    error);
     }
 
@@ -196,7 +197,7 @@ int CAPIClientBrowser::listItems (json_t *json_params, json_t **result, void *da
         return -1;
     }
 
-    *result = json_string(json.c_str());
+    Common::BrowserMapListToJSON(capiResult, result);
     return 0;
 }
 
@@ -276,10 +277,10 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
     std::cout << "In function " << __FUNCTION__ << std::endl;
     CommonAPI::CallStatus callStatus;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
+    org::genivi::mediamanager::MediaTypes::ResultMapList capiResult;
     const char *query, *container;
     int offset, count;
     std::vector<std::string> filter;
-    std::string resultStr;
 
     json_t *p0 = json_array_get(json_params, 0);
     json_t *p1 = json_array_get(json_params, 1);
@@ -320,7 +321,7 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
                                          filter,
                                          sortKey,
                                          callStatus,
-                                         resultStr,
+                                         capiResult,
                                          error);
     } else {
         m_browserProxy->searchObjects (container,
@@ -329,7 +330,7 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
                                        count,
                                        filter,
                                        callStatus,
-                                       resultStr,
+                                       capiResult,
                                        error);
     }
 
@@ -338,7 +339,7 @@ int CAPIClientBrowser::searchObjects(json_t *json_params, json_t **result, void 
         return -1;
     }
 
-    *result = json_string(resultStr.c_str());
+    Common::BrowserMapListToJSON(capiResult, result);
     return 0;
 }
 
@@ -346,10 +347,10 @@ int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *
     std::cout << "In function " << __FUNCTION__ << std::endl;
     CommonAPI::CallStatus callStatus;
     org::genivi::mediamanager::BrowserTypes::BrowserError error;
+    org::genivi::mediamanager::MediaTypes::ResultMapList capiResult;
     const char *container;
     int offset, count;
     std::vector<std::string> filter;
-    std::string resultStr;
 
     json_t *p0 = json_array_get(json_params, 0);
     json_t *p1 = json_array_get(json_params, 1);
@@ -388,7 +389,7 @@ int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *
                                         filter,
                                         sortKey,
                                         callStatus,
-                                        resultStr,
+                                        capiResult,
                                         error);
     } else {
         std::cout << "Using standard variant" << std::endl;
@@ -397,7 +398,7 @@ int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *
                                       count,
                                       filter,
                                       callStatus,
-                                      resultStr,
+                                      capiResult,
                                       error);
     }
 
@@ -406,7 +407,7 @@ int CAPIClientBrowser::listChildren(json_t *json_params, json_t **result, void *
         return -1;
     }
 
-    *result = json_string(resultStr.c_str());
+    Common::BrowserMapListToJSON(capiResult, result);
     return 0;
 }
 int CAPIClientBrowser::listIndexes(json_t *json_params, json_t **result, void *data){return 0;}
